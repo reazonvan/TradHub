@@ -72,6 +72,8 @@ app.add_middleware(
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
+    expose_headers=["X-Process-Time", "Content-Disposition"],
+    max_age=3600,
 )
 
 # Подключение статических файлов
@@ -305,4 +307,30 @@ async def health_check():
     """
     Проверка состояния API
     """
-    return {"status": "ok", "time": datetime.now().isoformat()} 
+    return {"status": "ok", "time": datetime.now().isoformat()}
+
+# Добавляем middleware для X-Serveo-URL
+@app.middleware("http")
+async def check_serveo_url(request: Request, call_next):
+    """
+    Middleware для определения URL Serveo и установки правильных заголовков
+    """
+    # Извлекаем имя хоста из запроса
+    host = request.headers.get("host", "")
+    
+    # Проверяем, является ли запрос от Serveo
+    if "serveo.net" in host:
+        logger.info(f"Запрос через Serveo: {host}")
+        
+        # Запоминаем URL Serveo в логах
+        with open("logs/serveo/current_url.txt", "w") as f:
+            f.write(f"http://{host}")
+    
+    # Продолжаем обработку запроса
+    response = await call_next(request)
+    
+    # Добавляем заголовок безопасности для всех ответов
+    response.headers["X-Content-Type-Options"] = "nosniff"
+    response.headers["X-Frame-Options"] = "SAMEORIGIN"
+    
+    return response 

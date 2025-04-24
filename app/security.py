@@ -10,6 +10,8 @@ from collections import defaultdict
 import time
 import random
 import string
+import os
+import logging
 
 from app.config import settings
 from app.database import get_db
@@ -395,4 +397,90 @@ def verify_phone_code(db, phone, code):
     verification.is_verified = True
     db.commit()
     
-    return True, "Номер телефона успешно подтвержден" 
+    return True, "Номер телефона успешно подтвержден"
+
+# Добавление защиты от атак через публичный туннель
+class ServeoSecurity:
+    """
+    Класс для обеспечения дополнительной безопасности при работе через публичный туннель
+    """
+    
+    @staticmethod
+    def is_serveo_request(request) -> bool:
+        """
+        Проверяет, является ли запрос направленным через Serveo
+        """
+        host = request.headers.get("host", "")
+        return "serveo.net" in host
+    
+    @staticmethod
+    def limit_admin_access(request) -> bool:
+        """
+        Ограничивает доступ к административным функциям через Serveo
+        только для определенных IP-адресов
+        """
+        # Если запрос не через Serveo, разрешаем (будет проверка обычной авторизации)
+        if not ServeoSecurity.is_serveo_request(request):
+            return True
+            
+        # Для Serveo проверяем IP клиента
+        client_ip = request.headers.get("x-forwarded-for") or request.client.host
+        
+        # Белый список IP для доступа к админке через Serveo (из файла)
+        whitelist_file = "admin_ip_whitelist.txt"
+        
+        try:
+            if os.path.exists(whitelist_file):
+                with open(whitelist_file, "r") as f:
+                    whitelist = [line.strip() for line in f.readlines() if line.strip()]
+                    
+                # Если IP в белом списке, разрешаем доступ
+                if client_ip in whitelist:
+                    return True
+        except Exception as e:
+            logging.error(f"Ошибка при проверке белого списка IP: {str(e)}")
+        
+        # По умолчанию запрещаем доступ к админке через Serveo
+        return False
+    
+    @staticmethod
+    def check_rate_limit(request, limit_key: str, max_requests: int = 10, per_minutes: int = 1) -> bool:
+        """
+        Проверяет ограничение скорости запросов для защиты от брутфорса и DoS
+        """
+        # Если запрос не через Serveo, не ограничиваем
+        if not ServeoSecurity.is_serveo_request(request):
+            return True
+            
+        # Получаем IP клиента
+        client_ip = request.headers.get("x-forwarded-for") or request.client.host
+        
+        # Создаем ключ для Redis
+        redis_key = f"ratelimit:{limit_key}:{client_ip}"
+        
+        # Используем Redis для отслеживания количества запросов
+        try:
+            from app.database import redis_client
+            
+            # Получаем текущее значение счетчика
+            count = redis_client.get(redis_key)
+            
+            if count is None:
+                # Если счетчик не существует, создаем новый
+                redis_client.set(redis_key, 1, ex=per_minutes*60)
+                return True
+            
+            # Увеличиваем счетчик
+            count = int(count) + 1
+            redis_client.set(redis_key, count, keepttl=True)
+            
+            # Проверяем превышение лимита
+            if count > max_requests:
+                logging.warning(f"Превышен лимит запросов: {limit_key} от {client_ip}, {count}/{max_requests}")
+                return False
+                
+            return True
+        except Exception as e:
+            logging.error(f"Ошибка при проверке ограничения скорости: {str(e)}")
+            # В случае ошибки разрешаем запрос
+            return True 

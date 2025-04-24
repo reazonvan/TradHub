@@ -13,7 +13,7 @@ from app.models.order import Order, OrderStatus
 from app.schemas.user import User as UserSchema
 from app.schemas.product import ProductDetail
 from app.schemas.order import OrderDetail
-from app.security import get_current_admin
+from app.security import get_current_admin, get_current_active_admin, get_current_active_user, ServeoSecurity
 
 router = APIRouter()
 
@@ -26,6 +26,32 @@ class ModerationAction(str, enum.Enum):
     REJECTED = "rejected"
     REVERTED = "reverted"
     EDITED = "edited"
+
+# Добавляем middleware для проверки доступа к административным функциям через Serveo
+@router.middleware("http")
+async def check_admin_serveo_security(request: Request, call_next):
+    """
+    Middleware для проверки безопасности административных функций при работе через Serveo
+    """
+    # Проверяем, является ли запрос направленным через Serveo
+    if ServeoSecurity.is_serveo_request(request):
+        # Проверяем доступ к админке через Serveo
+        if not ServeoSecurity.limit_admin_access(request):
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail="Доступ к административным функциям через публичный туннель запрещен"
+            )
+        
+        # Проверяем ограничение скорости запросов
+        if not ServeoSecurity.check_rate_limit(request, "admin", max_requests=5, per_minutes=1):
+            raise HTTPException(
+                status_code=status.HTTP_429_TOO_MANY_REQUESTS,
+                detail="Слишком много запросов. Пожалуйста, повторите попытку позже."
+            )
+    
+    # Продолжаем обработку запроса
+    response = await call_next(request)
+    return response
 
 @router.get("/users", response_model=List[UserSchema])
 async def get_all_users(
