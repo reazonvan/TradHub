@@ -1,0 +1,54 @@
+{% extends "auth/base_auth.html" %}
+
+{% block title %}Тестирование SMS | TradeHub{% endblock %}
+
+{% block content %}
+<div class="flex min-h-screen items-center justify-center p-4 md:p-8">
+    <div class="w-full max-w-md rounded-xl bg-white p-6 shadow-lg md:p-8">
+        <!-- Заголовок -->
+        <div class="mb-8 text-center">
+            <h1 class="mb-2 font-display text-3xl font-bold text-gray-900">Тестирование SMS</h1>
+            <p class="text-gray-600">Отправка тестового SMS-сообщения</p>
+        </div>
+        
+        <!-- Сообщение об ошибке -->
+        {% if error %}
+        <div class="mb-4 rounded-md bg-red-50 p-4 text-sm text-red-700">
+            <p>{{ error }}</p>
+        </div>
+        {% endif %}
+        
+        <!-- Сообщение об успехе -->
+        {% if success %}
+        <div class="mb-4 rounded-md bg-green-50 p-4 text-sm text-green-700">
+            <p>{{ success }}</p>
+        </div>
+        {% endif %}
+        
+        <!-- Форма отправки SMS -->
+        <form action="/auth/test-sms" method="post" class="space-y-6">
+            <!-- Поле телефона -->
+            <div>
+                <label for="phone" class="mb-1 block text-sm font-medium text-gray-700">Номер телефона</label>
+                <input type="text" id="phone" name="phone" required placeholder="+7XXXXXXXXXX"
+                    class="w-full rounded-lg border border-gray-300 px-4 py-2.5 shadow-sm focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/20">
+                <p class="mt-1 text-xs text-gray-500">Введите номер в международном формате</p>
+            </div>
+            
+            <!-- Поле сообщения -->
+            <div>
+                <label for="message" class="mb-1 block text-sm font-medium text-gray-700">Сообщение</label>
+                <textarea id="message" name="message" rows="3" required placeholder="Текст сообщения"
+                    class="w-full rounded-lg border border-gray-300 px-4 py-2.5 shadow-sm focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/20"></textarea>
+            </div>
+            
+            <!-- Кнопка отправки -->
+            <div>
+                <button type="submit" class="w-full rounded-lg bg-accent px-4 py-3 font-medium text-white hover:bg-accent-dark focus:outline-none focus:ring-2 focus:ring-accent/50">
+                    Отправить SMS
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %} 

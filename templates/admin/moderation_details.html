@@ -1,0 +1,278 @@
+<!-- Шаблон для детальной информации о предмете при модерации -->
+<div class="relative">
+    <!-- Заголовок и кнопка закрытия -->
+    <div class="flex justify-between items-center p-4 border-b">
+        <h2 class="text-xl font-bold">Модерация предмета #{{ item.id }}</h2>
+        <button onclick="document.getElementById('moderation-modal').classList.add('hidden')" class="text-gray-500 hover:text-gray-700">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+        </button>
+    </div>
+    
+    <!-- Основное содержимое -->
+    <div class="p-6">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <!-- Левая колонка с фото -->
+            <div class="md:col-span-1">
+                <div class="relative mb-4">
+                    <img src="{{ item.thumbnail|default('/static/images/placeholder.jpg') }}" alt="{{ item.title }}" class="w-full rounded-lg shadow-sm">
+                    <div class="absolute top-2 right-2">
+                        <span class="badge badge-{{ item.status_badge }}">{{ item.status_text }}</span>
+                    </div>
+                </div>
+                
+                {% if item.images %}
+                <div class="grid grid-cols-3 gap-2">
+                    {% for image in item.images[:6] %}
+                    <img src="{{ image.image_url }}" alt="Доп. изображение {{ loop.index }}" class="rounded w-full h-20 object-cover cursor-pointer hover:opacity-80">
+                    {% endfor %}
+                </div>
+                {% endif %}
+                
+                <!-- Статистика продавца -->
+                <div class="mt-4 p-3 bg-gray-50 rounded-lg">
+                    <h4 class="font-bold text-sm mb-2">Статистика продавца</h4>
+                    <div class="grid grid-cols-2 gap-2 text-sm">
+                        <div>
+                            <span class="text-gray-500">На модерации:</span>
+                            <span class="font-medium">{{ seller_stats.pending_items }}</span>
+                        </div>
+                        <div>
+                            <span class="text-gray-500">Отклонено:</span>
+                            <span class="font-medium">{{ seller_stats.rejected_items }}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Правая колонка с информацией -->
+            <div class="md:col-span-2">
+                <h3 class="text-2xl font-bold mb-4">{{ item.title }}</h3>
+                
+                <div class="grid grid-cols-2 gap-4 mb-6">
+                    <div>
+                        <p class="text-sm text-gray-500">Цена</p>
+                        <p class="text-xl font-bold text-accent-teal">{{ item.price|format_price }}</p>
+                    </div>
+                    <div>
+                        <p class="text-sm text-gray-500">Категория</p>
+                        <p class="font-medium">{{ item.categories[0].name if item.categories else 'Не указана' }}</p>
+                    </div>
+                    <div>
+                        <p class="text-sm text-gray-500">Продавец</p>
+                        <p class="font-medium">{{ item.seller.username }}</p>
+                    </div>
+                    <div>
+                        <p class="text-sm text-gray-500">Дата создания</p>
+                        <p class="font-medium">{{ item.created_at|time_ago }}</p>
+                    </div>
+                    <div>
+                        <p class="text-sm text-gray-500">Статус</p>
+                        <p class="font-medium">{{ item.status_text }}</p>
+                    </div>
+                    <div>
+                        <p class="text-sm text-gray-500">Количество</p>
+                        <p class="font-medium">{{ item.quantity }}</p>
+                    </div>
+                </div>
+                
+                <div class="mb-6">
+                    <h4 class="font-bold mb-2">Описание:</h4>
+                    <div class="bg-gray-50 p-4 rounded-lg text-gray-700">
+                        {{ item.description|safe }}
+                    </div>
+                </div>
+                
+                <!-- История модерации -->
+                {% if moderation_history %}
+                <div class="mb-6">
+                    <h4 class="font-bold mb-2">История модерации:</h4>
+                    <div class="bg-gray-50 p-4 rounded-lg">
+                        {% for entry in moderation_history %}
+                        <div class="border-b border-gray-200 last:border-0 py-2">
+                            <div class="flex justify-between">
+                                <span class="font-medium">{{ entry.action_text }}</span>
+                                <span class="text-sm text-gray-500">{{ entry.date|time_ago }}</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-sm text-gray-500">{{ entry.admin }}</span>
+                                {% if entry.action == 'rejected' %}
+                                <span class="text-sm font-medium text-red-600">{{ entry.reason }}</span>
+                                {% endif %}
+                            </div>
+                            {% if entry.comment %}
+                            <div class="text-sm mt-1 bg-gray-100 p-2 rounded">
+                                {{ entry.comment }}
+                            </div>
+                            {% endif %}
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                {% endif %}
+                
+                <!-- Действия -->
+                <div class="flex flex-wrap justify-end gap-3 border-t pt-4">
+                    {% if item.status == 'moderation' %}
+                        <button id="reject-button" class="btn-danger" onclick="showRejectForm()">Отклонить</button>
+                        <button class="btn-primary" 
+                                hx-put="/admin/products/{{ item.id }}/approve"
+                                hx-target="#moderation-modal-content">
+                            Одобрить
+                        </button>
+                    {% elif item.status == 'active' %}
+                        <button id="revert-button" class="btn-warning" onclick="showCommentForm('revert')">
+                            Вернуть на модерацию
+                        </button>
+                        <button id="hide-button" class="btn-danger" onclick="showCommentForm('hide')">
+                            Скрыть
+                        </button>
+                    {% elif item.status == 'hidden' %}
+                        <button id="revert-button" class="btn-warning" onclick="showCommentForm('revert')">
+                            Вернуть на модерацию
+                        </button>
+                        <button class="btn-primary"
+                                hx-put="/admin/products/{{ item.id }}/approve"
+                                hx-target="#moderation-modal-content">
+                            Активировать
+                        </button>
+                    {% endif %}
+                </div>
+                
+                <!-- Форма отклонения (скрыта по умолчанию) -->
+                <div id="rejection-form" class="hidden mt-4 border-t pt-4">
+                    <h4 class="font-bold mb-2">Причина отклонения:</h4>
+                    <form>
+                        <div class="mb-4">
+                            <select name="reason" id="rejection_reason" class="w-full border rounded-md p-2 mb-2" required>
+                                <option value="">Выберите причину...</option>
+                                <option value="Запрещенный предмет">Запрещенный предмет</option>
+                                <option value="Некорректная цена">Некорректная цена</option>
+                                <option value="Низкое качество изображений">Низкое качество изображений</option>
+                                <option value="Неполное описание">Неполное описание</option>
+                                <option value="Неверная категория">Неверная категория</option>
+                                <option value="Другое">Другое (укажите в комментарии)</option>
+                            </select>
+                            <textarea name="comment" id="rejection_comment" placeholder="Комментарий модератора..." class="w-full border rounded-md p-2 h-20"></textarea>
+                        </div>
+                        <div class="flex justify-end gap-3">
+                            <button type="button" class="btn-secondary" onclick="hideForm('rejection-form', 'reject-button')">Отмена</button>
+                            <button type="button" class="btn-danger" onclick="rejectItem()">Отклонить предмет</button>
+                        </div>
+                    </form>
+                </div>
+                
+                <!-- Форма комментария для других действий (скрыта по умолчанию) -->
+                <div id="comment-form" class="hidden mt-4 border-t pt-4">
+                    <h4 id="comment-form-title" class="font-bold mb-2">Добавить комментарий:</h4>
+                    <form>
+                        <div class="mb-4">
+                            <input type="hidden" id="action_type" name="action_type" value="">
+                            <textarea name="comment" id="action_comment" placeholder="Комментарий модератора (необязательно)..." class="w-full border rounded-md p-2 h-20"></textarea>
+                        </div>
+                        <div class="flex justify-end gap-3">
+                            <button type="button" class="btn-secondary" onclick="hideCommentForm()">Отмена</button>
+                            <button type="button" id="action-button" class="btn-primary" onclick="submitAction()">Подтвердить</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Общая функция для скрытия формы
+    function hideForm(formId, buttonId) {
+        document.getElementById(formId).classList.add('hidden');
+        if (buttonId) {
+            document.getElementById(buttonId).classList.remove('hidden');
+        }
+    }
+    
+    // Функции для формы отклонения
+    function showRejectForm() {
+        document.getElementById('rejection-form').classList.remove('hidden');
+        document.getElementById('reject-button').classList.add('hidden');
+    }
+    
+    function rejectItem() {
+        const reason = document.getElementById('rejection_reason').value;
+        const comment = document.getElementById('rejection_comment').value;
+        
+        if (!reason) {
+            alert('Пожалуйста, выберите причину отклонения');
+            return;
+        }
+        
+        // Отправка запроса через HTMX программно
+        htmx.ajax('PUT', '/admin/products/{{ item.id }}/reject', {
+            target: '#moderation-modal-content',
+            values: { 
+                reason: reason,
+                comment: comment
+            }
+        });
+    }
+    
+    // Функции для формы комментария
+    function showCommentForm(action) {
+        // Скрываем все кнопки действий
+        const buttons = document.querySelectorAll('#revert-button, #hide-button');
+        buttons.forEach(button => button.classList.add('hidden'));
+        
+        // Устанавливаем тип действия и заголовок
+        document.getElementById('action_type').value = action;
+        const actionButton = document.getElementById('action-button');
+        
+        if (action === 'revert') {
+            document.getElementById('comment-form-title').innerText = 'Вернуть на модерацию:';
+            actionButton.innerText = 'Вернуть на модерацию';
+            actionButton.className = 'btn-warning';
+        } else if (action === 'hide') {
+            document.getElementById('comment-form-title').innerText = 'Скрыть предмет:';
+            actionButton.innerText = 'Скрыть';
+            actionButton.className = 'btn-danger';
+        }
+        
+        // Показываем форму
+        document.getElementById('comment-form').classList.remove('hidden');
+    }
+    
+    function hideCommentForm() {
+        hideForm('comment-form');
+        
+        // Показываем снова все кнопки действий
+        const buttons = document.querySelectorAll('#revert-button, #hide-button');
+        buttons.forEach(button => button.classList.remove('hidden'));
+    }
+    
+    function submitAction() {
+        const action = document.getElementById('action_type').value;
+        const comment = document.getElementById('action_comment').value;
+        let url = '';
+        
+        if (action === 'revert') {
+            url = '/admin/products/{{ item.id }}/revert-to-moderation';
+        } else if (action === 'hide') {
+            // При скрытии используем метод отклонения с причиной "Скрыто администратором"
+            htmx.ajax('PUT', '/admin/products/{{ item.id }}/reject', {
+                target: '#moderation-modal-content',
+                values: { 
+                    reason: 'Скрыто администратором',
+                    comment: comment
+                }
+            });
+            return;
+        }
+        
+        // Для остальных действий
+        if (url) {
+            htmx.ajax('PUT', url, {
+                target: '#moderation-modal-content',
+                values: { comment: comment }
+            });
+        }
+    }
+</script> 

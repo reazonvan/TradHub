@@ -1,0 +1,23 @@
+# Бинарные и временные файлы
+*.exe
+*.zip
+*.db
+node_modules/
+logs/
+*.log
+__pycache__/
+*.py[cod]
+*$py.class
+.venv/
+venv/
+ENV/
+env/
+
+# Настройки IDE и ОС
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db
+
+# Чувствительные данные
+.env 

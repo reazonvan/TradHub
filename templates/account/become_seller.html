@@ -1,0 +1,178 @@
+{% extends "base.html" %}
+
+{% block title %}Стать продавцом - TradeHub{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row">
+        <!-- Боковое меню профиля -->
+        <div class="col-lg-3 mb-4">
+            <div class="card shadow-sm">
+                <div class="card-body text-center">
+                    {% if user.avatar %}
+                    <img src="{{ url_for('static', path=user.avatar) }}" alt="{{ user.username }}" class="rounded-circle mb-3" width="120" height="120">
+                    {% else %}
+                    <div class="rounded-circle bg-secondary text-white d-flex align-items-center justify-content-center mx-auto mb-3" style="width: 120px; height: 120px; font-size: 3rem;">
+                        {{ user.username[0] | upper }}
+                    </div>
+                    {% endif %}
+                    <h4 class="mb-0">{{ user.username }}</h4>
+                    <p class="text-muted">{{ user.full_name }}</p>
+                </div>
+                
+                <div class="list-group list-group-flush">
+                    <a href="{{ url_for('user_profile') }}" class="list-group-item list-group-item-action">
+                        <i class="fas fa-user me-2"></i> Мой профиль
+                    </a>
+                    <a href="{{ url_for('update_user_profile_page') }}" class="list-group-item list-group-item-action">
+                        <i class="fas fa-edit me-2"></i> Редактировать профиль
+                    </a>
+                    <a href="{{ url_for('user_orders') }}" class="list-group-item list-group-item-action">
+                        <i class="fas fa-shopping-bag me-2"></i> Мои заказы
+                    </a>
+                    <a href="{{ url_for('become_seller_page') }}" class="list-group-item list-group-item-action active">
+                        <i class="fas fa-store me-2"></i> Стать продавцом
+                    </a>
+                    <a href="{{ url_for('user_wishlist') }}" class="list-group-item list-group-item-action">
+                        <i class="fas fa-heart me-2"></i> Избранное
+                    </a>
+                    <a href="{{ url_for('user_security') }}" class="list-group-item list-group-item-action">
+                        <i class="fas fa-shield-alt me-2"></i> Безопасность
+                    </a>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Основное содержимое страницы -->
+        <div class="col-lg-9">
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-white">
+                    <h5 class="mb-0">Станьте продавцом на TradeHub</h5>
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-info" role="alert">
+                        <h5 class="alert-heading"><i class="fas fa-info-circle me-2"></i>Почему стоит стать продавцом?</h5>
+                        <ul class="mb-0">
+                            <li>Доступ к миллионам потенциальных покупателей</li>
+                            <li>Гибкая система комиссий</li>
+                            <li>Удобные инструменты для управления товарами и заказами</li>
+                            <li>Поддержка продавцов 24/7</li>
+                            <li>Безопасные платежи и защита от мошенничества</li>
+                        </ul>
+                    </div>
+                    
+                    {% if error %}
+                    <div class="alert alert-danger" role="alert">
+                        {{ error }}
+                    </div>
+                    {% endif %}
+                    
+                    <form method="post" action="{{ url_for('become_seller_submit') }}">
+                        <h5 class="mb-3">Расскажите о себе и своих товарах</h5>
+                        
+                        <div class="mb-3">
+                            <label for="description" class="form-label">Описание вашего магазина</label>
+                            <textarea class="form-control" id="description" name="description" rows="5" placeholder="Расскажите о себе, своих товарах или услугах, опыте работы в данной области..." required></textarea>
+                            <div class="form-text text-muted">
+                                Минимум 10 символов. Хорошее описание поможет покупателям лучше узнать вас и повысит уровень доверия.
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3 form-check">
+                            <input type="checkbox" class="form-check-input" id="terms_seller" required>
+                            <label class="form-check-label" for="terms_seller">
+                                Я соглашаюсь с <a href="#" target="_blank">условиями продажи</a> и <a href="#" target="_blank">правилами сервиса</a> для продавцов
+                            </label>
+                        </div>
+                        
+                        <div class="alert alert-warning" role="alert">
+                            <i class="fas fa-exclamation-triangle me-2"></i>
+                            <strong>Обратите внимание!</strong> После перехода в статус продавца вы получите доступ к дополнительным возможностям платформы и сможете размещать товары на продажу. Плата за регистрацию продавца не взимается, но с каждой продажи будет удержана комиссия согласно тарифам сервиса.
+                        </div>
+                        
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-success btn-lg">
+                                <i class="fas fa-store me-2"></i> Стать продавцом
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            
+            <div class="card shadow-sm">
+                <div class="card-header bg-white">
+                    <h5 class="mb-0">Часто задаваемые вопросы</h5>
+                </div>
+                <div class="card-body">
+                    <div class="accordion" id="faqAccordion">
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="faqHeading1">
+                                <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#faqCollapse1" aria-expanded="true" aria-controls="faqCollapse1">
+                                    Сколько стоит регистрация продавца?
+                                </button>
+                            </h2>
+                            <div id="faqCollapse1" class="accordion-collapse collapse show" aria-labelledby="faqHeading1" data-bs-parent="#faqAccordion">
+                                <div class="accordion-body">
+                                    Регистрация продавца на нашей платформе абсолютно бесплатна. Вы платите только комиссию с каждой совершенной продажи согласно нашим тарифам.
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="faqHeading2">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faqCollapse2" aria-expanded="false" aria-controls="faqCollapse2">
+                                    Какая комиссия с продаж?
+                                </button>
+                            </h2>
+                            <div id="faqCollapse2" class="accordion-collapse collapse" aria-labelledby="faqHeading2" data-bs-parent="#faqAccordion">
+                                <div class="accordion-body">
+                                    Базовая комиссия составляет 5% от суммы заказа. Для некоторых категорий товаров могут действовать специальные ставки. Подробнее о комиссиях можно узнать в разделе <a href="#">"Тарифы"</a>.
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="faqHeading3">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faqCollapse3" aria-expanded="false" aria-controls="faqCollapse3">
+                                    Как происходит выплата денег за проданные товары?
+                                </button>
+                            </h2>
+                            <div id="faqCollapse3" class="accordion-collapse collapse" aria-labelledby="faqHeading3" data-bs-parent="#faqAccordion">
+                                <div class="accordion-body">
+                                    Выплаты производятся на банковскую карту или расчетный счет продавца. После подтверждения получения товара покупателем, средства (за вычетом комиссии) перечисляются на ваш счет в течение 3 рабочих дней.
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="faqHeading4">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faqCollapse4" aria-expanded="false" aria-controls="faqCollapse4">
+                                    Какие документы нужны для регистрации продавца?
+                                </button>
+                            </h2>
+                            <div id="faqCollapse4" class="accordion-collapse collapse" aria-labelledby="faqHeading4" data-bs-parent="#faqAccordion">
+                                <div class="accordion-body">
+                                    Для физических лиц достаточно паспортных данных. Для юридических лиц и ИП потребуются регистрационные документы (ОГРН, ИНН) и реквизиты для выплат. Документы можно будет загрузить в личном кабинете продавца после регистрации.
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="faqHeading5">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faqCollapse5" aria-expanded="false" aria-controls="faqCollapse5">
+                                    Можно ли отменить статус продавца?
+                                </button>
+                            </h2>
+                            <div id="faqCollapse5" class="accordion-collapse collapse" aria-labelledby="faqHeading5" data-bs-parent="#faqAccordion">
+                                <div class="accordion-body">
+                                    Да, вы можете в любой момент приостановить деятельность продавца или полностью вернуться к статусу покупателя. Для этого обратитесь в службу поддержки или воспользуйтесь соответствующей опцией в личном кабинете продавца.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

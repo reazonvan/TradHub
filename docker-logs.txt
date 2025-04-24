@@ -1,0 +1,370 @@
+﻿celery-1    | /usr/local/lib/python3.11/site-packages/celery/platforms.py:840: SecurityWarning: You're running the worker with superuser privileges: this is
+celery-1    | absolutely not recommended!
+celery-1    | 
+celery-1    | Please specify a different user using the --uid option.
+celery-1    | 
+celery-1    | User information: uid=0 euid=0 gid=0 egid=0
+celery-1    | 
+celery-1    |   warnings.warn(SecurityWarning(ROOT_DISCOURAGED.format(
+celery-1    | [1;36m 
+celery-1    |  -------------- celery@e95345bc3073 v5.2.7 (dawn-chorus)
+celery-1    | --- ***** ----- 
+celery-1    | -- ******* ---- Linux-5.15.167.4-microsoft-standard-WSL2-x86_64-with-glibc2.36 2025-04-22 20:19:30
+celery-1    | - *** --- * --- 
+celery-1    | - ** ---------- [config]
+celery-1    | - ** ---------- .> app:         tradehub:0x7f20f7796c90
+celery-1    | - ** ---------- .> transport:   redis://redis:6379/0
+celery-1    | - ** ---------- .> results:     redis://redis:6379/0
+celery-1    | - *** --- * --- .> concurrency: 12 (prefork)
+celery-1    | -- ******* ---- .> task events: OFF (enable -E to monitor tasks in this worker)
+celery-1    | --- ***** ----- 
+celery-1    |  -------------- [queues]
+celery-1    |                 .> celery           exchange=celery(direct) key=celery
+celery-1    |                 
+celery-1    | [0m[0m
+celery-1    | [tasks]
+celery-1    |   . periodic_cleanup
+celery-1    |   . process_order_payments
+celery-1    |   . send_email_notification
+celery-1    |   . update_order_status
+celery-1    | [0m
+celery-1    | [2025-04-22 20:19:30,525: INFO/MainProcess] Connected to redis://redis:6379/0
+celery-1    | [2025-04-22 20:19:30,531: INFO/MainProcess] mingle: searching for neighbors
+celery-1    | [2025-04-22 20:19:31,541: INFO/MainProcess] mingle: all alone
+celery-1    | [2025-04-22 20:19:31,555: INFO/MainProcess] celery@e95345bc3073 ready.
+web-1       | [32mINFO[0m:     Will watch for changes in these directories: ['/app']
+web-1       | [32mINFO[0m:     Uvicorn running on [1mhttp://0.0.0.0:8000[0m (Press CTRL+C to quit)
+web-1       | [32mINFO[0m:     Started reloader process [[36m[1m1[0m] using [36m[1mStatReload[0m
+web-1       | 2025-04-22 20:19:30,861 INFO sqlalchemy.engine.Engine select pg_catalog.version()
+web-1       | 2025-04-22 20:19:30,861 - sqlalchemy.engine.Engine - INFO - select pg_catalog.version()
+web-1       | 2025-04-22 20:19:30,861 INFO sqlalchemy.engine.Engine [raw sql] {}
+web-1       | 2025-04-22 20:19:30,861 - sqlalchemy.engine.Engine - INFO - [raw sql] {}
+web-1       | 2025-04-22 20:19:30,863 INFO sqlalchemy.engine.Engine select current_schema()
+web-1       | 2025-04-22 20:19:30,863 - sqlalchemy.engine.Engine - INFO - select current_schema()
+web-1       | 2025-04-22 20:19:30,863 INFO sqlalchemy.engine.Engine [raw sql] {}
+web-1       | 2025-04-22 20:19:30,863 - sqlalchemy.engine.Engine - INFO - [raw sql] {}
+web-1       | 2025-04-22 20:19:30,864 INFO sqlalchemy.engine.Engine show standard_conforming_strings
+web-1       | 2025-04-22 20:19:30,864 - sqlalchemy.engine.Engine - INFO - show standard_conforming_strings
+web-1       | 2025-04-22 20:19:30,864 INFO sqlalchemy.engine.Engine [raw sql] {}
+web-1       | 2025-04-22 20:19:30,864 - sqlalchemy.engine.Engine - INFO - [raw sql] {}
+web-1       | 2025-04-22 20:19:30,864 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+web-1       | 2025-04-22 20:19:30,864 - sqlalchemy.engine.Engine - INFO - BEGIN (implicit)
+web-1       | 2025-04-22 20:19:30,867 INFO sqlalchemy.engine.Engine SELECT pg_catalog.pg_class.relname 
+web-1       | FROM pg_catalog.pg_class JOIN pg_catalog.pg_namespace ON pg_catalog.pg_namespace.oid = pg_catalog.pg_class.relnamespace 
+web-1       | WHERE pg_catalog.pg_class.relname = %(table_name)s AND pg_catalog.pg_class.relkind = ANY (ARRAY[%(param_1)s, %(param_2)s, %(param_3)s, %(param_4)s, %(param_5)s]) AND pg_catalog.pg_table_is_visible(pg_catalog.pg_class.oid) AND pg_catalog.pg_namespace.nspname != %(nspname_1)s
+web-1       | 2025-04-22 20:19:30,867 - sqlalchemy.engine.Engine - INFO - SELECT pg_catalog.pg_class.relname 
+web-1       | FROM pg_catalog.pg_class JOIN pg_catalog.pg_namespace ON pg_catalog.pg_namespace.oid = pg_catalog.pg_class.relnamespace 
+web-1       | WHERE pg_catalog.pg_class.relname = %(table_name)s AND pg_catalog.pg_class.relkind = ANY (ARRAY[%(param_1)s, %(param_2)s, %(param_3)s, %(param_4)s, %(param_5)s]) AND pg_catalog.pg_table_is_visible(pg_catalog.pg_class.oid) AND pg_catalog.pg_namespace.nspname != %(nspname_1)s
+web-1       | 2025-04-22 20:19:30,867 INFO sqlalchemy.engine.Engine [generated in 0.00020s] {'table_name': 'users', 'param_1': 'r', 'param_2': 'p', 'param_3': 'f', 'param_4': 'v', 'param_5': 'm', 'nspname_1': 'pg_catalog'}
+web-1       | 2025-04-22 20:19:30,867 - sqlalchemy.engine.Engine - INFO - [generated in 0.00020s] {'table_name': 'users', 'param_1': 'r', 'param_2': 'p', 'param_3': 'f', 'param_4': 'v', 'param_5': 'm', 'nspname_1': 'pg_catalog'}
+web-1       | 2025-04-22 20:19:30,870 INFO sqlalchemy.engine.Engine SELECT pg_catalog.pg_class.relname 
+web-1       | FROM pg_catalog.pg_class JOIN pg_catalog.pg_namespace ON pg_catalog.pg_namespace.oid = pg_catalog.pg_class.relnamespace 
+web-1       | WHERE pg_catalog.pg_class.relname = %(table_name)s AND pg_catalog.pg_class.relkind = ANY (ARRAY[%(param_1)s, %(param_2)s, %(param_3)s, %(param_4)s, %(param_5)s]) AND pg_catalog.pg_table_is_visible(pg_catalog.pg_class.oid) AND pg_catalog.pg_namespace.nspname != %(nspname_1)s
+web-1       | 2025-04-22 20:19:30,870 - sqlalchemy.engine.Engine - INFO - SELECT pg_catalog.pg_class.relname 
+web-1       | FROM pg_catalog.pg_class JOIN pg_catalog.pg_namespace ON pg_catalog.pg_namespace.oid = pg_catalog.pg_class.relnamespace 
+web-1       | WHERE pg_catalog.pg_class.relname = %(table_name)s AND pg_catalog.pg_class.relkind = ANY (ARRAY[%(param_1)s, %(param_2)s, %(param_3)s, %(param_4)s, %(param_5)s]) AND pg_catalog.pg_table_is_visible(pg_catalog.pg_class.oid) AND pg_catalog.pg_namespace.nspname != %(nspname_1)s
+web-1       | 2025-04-22 20:19:30,871 INFO sqlalchemy.engine.Engine [cached since 0.003688s ago] {'table_name': 'product_category', 'param_1': 'r', 'param_2': 'p', 'param_3': 'f', 'param_4': 'v', 'param_5': 'm', 'nspname_1': 'pg_catalog'}
+web-1       | 2025-04-22 20:19:30,871 - sqlalchemy.engine.Engine - INFO - [cached since 0.003688s ago] {'table_name': 'product_category', 'param_1': 'r', 'param_2': 'p', 'param_3': 'f', 'param_4': 'v', 'param_5': 'm', 'nspname_1': 'pg_catalog'}
+web-1       | 2025-04-22 20:19:30,871 INFO sqlalchemy.engine.Engine SELECT pg_catalog.pg_class.relname 
+web-1       | FROM pg_catalog.pg_class JOIN pg_catalog.pg_namespace ON pg_catalog.pg_namespace.oid = pg_catalog.pg_class.relnamespace 
+web-1       | WHERE pg_catalog.pg_class.relname = %(table_name)s AND pg_catalog.pg_class.relkind = ANY (ARRAY[%(param_1)s, %(param_2)s, %(param_3)s, %(param_4)s, %(param_5)s]) AND pg_catalog.pg_table_is_visible(pg_catalog.pg_class.oid) AND pg_catalog.pg_namespace.nspname != %(nspname_1)s
+web-1       | 2025-04-22 20:19:30,871 - sqlalchemy.engine.Engine - INFO - SELECT pg_catalog.pg_class.relname 
+web-1       | FROM pg_catalog.pg_class JOIN pg_catalog.pg_namespace ON pg_catalog.pg_namespace.oid = pg_catalog.pg_class.relnamespace 
+web-1       | WHERE pg_catalog.pg_class.relname = %(table_name)s AND pg_catalog.pg_class.relkind = ANY (ARRAY[%(param_1)s, %(param_2)s, %(param_3)s, %(param_4)s, %(param_5)s]) AND pg_catalog.pg_table_is_visible(pg_catalog.pg_class.oid) AND pg_catalog.pg_namespace.nspname != %(nspname_1)s
+web-1       | 2025-04-22 20:19:30,871 INFO sqlalchemy.engine.Engine [cached since 0.004325s ago] {'table_name': 'products', 'param_1': 'r', 'param_2': 'p', 'param_3': 'f', 'param_4': 'v', 'param_5': 'm', 'nspname_1': 'pg_catalog'}
+web-1       | 2025-04-22 20:19:30,871 - sqlalchemy.engine.Engine - INFO - [cached since 0.004325s ago] {'table_name': 'products', 'param_1': 'r', 'param_2': 'p', 'param_3': 'f', 'param_4': 'v', 'param_5': 'm', 'nspname_1': 'pg_catalog'}
+web-1       | 2025-04-22 20:19:30,872 INFO sqlalchemy.engine.Engine SELECT pg_catalog.pg_class.relname 
+web-1       | FROM pg_catalog.pg_class JOIN pg_catalog.pg_namespace ON pg_catalog.pg_namespace.oid = pg_catalog.pg_class.relnamespace 
+web-1       | WHERE pg_catalog.pg_class.relname = %(table_name)s AND pg_catalog.pg_class.relkind = ANY (ARRAY[%(param_1)s, %(param_2)s, %(param_3)s, %(param_4)s, %(param_5)s]) AND pg_catalog.pg_table_is_visible(pg_catalog.pg_class.oid) AND pg_catalog.pg_namespace.nspname != %(nspname_1)s
+web-1       | 2025-04-22 20:19:30,872 - sqlalchemy.engine.Engine - INFO - SELECT pg_catalog.pg_class.relname 
+web-1       | FROM pg_catalog.pg_class JOIN pg_catalog.pg_namespace ON pg_catalog.pg_namespace.oid = pg_catalog.pg_class.relnamespace 
+web-1       | WHERE pg_catalog.pg_class.relname = %(table_name)s AND pg_catalog.pg_class.relkind = ANY (ARRAY[%(param_1)s, %(param_2)s, %(param_3)s, %(param_4)s, %(param_5)s]) AND pg_catalog.pg_table_is_visible(pg_catalog.pg_class.oid) AND pg_catalog.pg_namespace.nspname != %(nspname_1)s
+web-1       | 2025-04-22 20:19:30,872 INFO sqlalchemy.engine.Engine [cached since 0.005103s ago] {'table_name': 'categories', 'param_1': 'r', 'param_2': 'p', 'param_3': 'f', 'param_4': 'v', 'param_5': 'm', 'nspname_1': 'pg_catalog'}
+web-1       | 2025-04-22 20:19:30,872 - sqlalchemy.engine.Engine - INFO - [cached since 0.005103s ago] {'table_name': 'categories', 'param_1': 'r', 'param_2': 'p', 'param_3': 'f', 'param_4': 'v', 'param_5': 'm', 'nspname_1': 'pg_catalog'}
+web-1       | 2025-04-22 20:19:30,873 INFO sqlalchemy.engine.Engine SELECT pg_catalog.pg_class.relname 
+web-1       | FROM pg_catalog.pg_class JOIN pg_catalog.pg_namespace ON pg_catalog.pg_namespace.oid = pg_catalog.pg_class.relnamespace 
+web-1       | WHERE pg_catalog.pg_class.relname = %(table_name)s AND pg_catalog.pg_class.relkind = ANY (ARRAY[%(param_1)s, %(param_2)s, %(param_3)s, %(param_4)s, %(param_5)s]) AND pg_catalog.pg_table_is_visible(pg_catalog.pg_class.oid) AND pg_catalog.pg_namespace.nspname != %(nspname_1)s
+web-1       | 2025-04-22 20:19:30,873 - sqlalchemy.engine.Engine - INFO - SELECT pg_catalog.pg_class.relname 
+web-1       | FROM pg_catalog.pg_class JOIN pg_catalog.pg_namespace ON pg_catalog.pg_namespace.oid = pg_catalog.pg_class.relnamespace 
+web-1       | WHERE pg_catalog.pg_class.relname = %(table_name)s AND pg_catalog.pg_class.relkind = ANY (ARRAY[%(param_1)s, %(param_2)s, %(param_3)s, %(param_4)s, %(param_5)s]) AND pg_catalog.pg_table_is_visible(pg_catalog.pg_class.oid) AND pg_catalog.pg_namespace.nspname != %(nspname_1)s
+web-1       | 2025-04-22 20:19:30,873 INFO sqlalchemy.engine.Engine [cached since 0.006062s ago] {'table_name': 'product_images', 'param_1': 'r', 'param_2': 'p', 'param_3': 'f', 'param_4': 'v', 'param_5': 'm', 'nspname_1': 'pg_catalog'}
+web-1       | 2025-04-22 20:19:30,873 - sqlalchemy.engine.Engine - INFO - [cached since 0.006062s ago] {'table_name': 'product_images', 'param_1': 'r', 'param_2': 'p', 'param_3': 'f', 'param_4': 'v', 'param_5': 'm', 'nspname_1': 'pg_catalog'}
+web-1       | 2025-04-22 20:19:30,873 INFO sqlalchemy.engine.Engine SELECT pg_catalog.pg_class.relname 
+web-1       | FROM pg_catalog.pg_class JOIN pg_catalog.pg_namespace ON pg_catalog.pg_namespace.oid = pg_catalog.pg_class.relnamespace 
+web-1       | WHERE pg_catalog.pg_class.relname = %(table_name)s AND pg_catalog.pg_class.relkind = ANY (ARRAY[%(param_1)s, %(param_2)s, %(param_3)s, %(param_4)s, %(param_5)s]) AND pg_catalog.pg_table_is_visible(pg_catalog.pg_class.oid) AND pg_catalog.pg_namespace.nspname != %(nspname_1)s
+web-1       | 2025-04-22 20:19:30,873 - sqlalchemy.engine.Engine - INFO - SELECT pg_catalog.pg_class.relname 
+web-1       | FROM pg_catalog.pg_class JOIN pg_catalog.pg_namespace ON pg_catalog.pg_namespace.oid = pg_catalog.pg_class.relnamespace 
+web-1       | WHERE pg_catalog.pg_class.relname = %(table_name)s AND pg_catalog.pg_class.relkind = ANY (ARRAY[%(param_1)s, %(param_2)s, %(param_3)s, %(param_4)s, %(param_5)s]) AND pg_catalog.pg_table_is_visible(pg_catalog.pg_class.oid) AND pg_catalog.pg_namespace.nspname != %(nspname_1)s
+web-1       | 2025-04-22 20:19:30,873 INFO sqlalchemy.engine.Engine [cached since 0.006632s ago] {'table_name': 'moderation_history', 'param_1': 'r', 'param_2': 'p', 'param_3': 'f', 'param_4': 'v', 'param_5': 'm', 'nspname_1': 'pg_catalog'}
+web-1       | 2025-04-22 20:19:30,873 - sqlalchemy.engine.Engine - INFO - [cached since 0.006632s ago] {'table_name': 'moderation_history', 'param_1': 'r', 'param_2': 'p', 'param_3': 'f', 'param_4': 'v', 'param_5': 'm', 'nspname_1': 'pg_catalog'}
+web-1       | 2025-04-22 20:19:30,874 INFO sqlalchemy.engine.Engine SELECT pg_catalog.pg_class.relname 
+web-1       | FROM pg_catalog.pg_class JOIN pg_catalog.pg_namespace ON pg_catalog.pg_namespace.oid = pg_catalog.pg_class.relnamespace 
+web-1       | WHERE pg_catalog.pg_class.relname = %(table_name)s AND pg_catalog.pg_class.relkind = ANY (ARRAY[%(param_1)s, %(param_2)s, %(param_3)s, %(param_4)s, %(param_5)s]) AND pg_catalog.pg_table_is_visible(pg_catalog.pg_class.oid) AND pg_catalog.pg_namespace.nspname != %(nspname_1)s
+web-1       | 2025-04-22 20:19:30,874 - sqlalchemy.engine.Engine - INFO - SELECT pg_catalog.pg_class.relname 
+web-1       | FROM pg_catalog.pg_class JOIN pg_catalog.pg_namespace ON pg_catalog.pg_namespace.oid = pg_catalog.pg_class.relnamespace 
+web-1       | WHERE pg_catalog.pg_class.relname = %(table_name)s AND pg_catalog.pg_class.relkind = ANY (ARRAY[%(param_1)s, %(param_2)s, %(param_3)s, %(param_4)s, %(param_5)s]) AND pg_catalog.pg_table_is_visible(pg_catalog.pg_class.oid) AND pg_catalog.pg_namespace.nspname != %(nspname_1)s
+web-1       | 2025-04-22 20:19:30,874 INFO sqlalchemy.engine.Engine [cached since 0.007252s ago] {'table_name': 'orders', 'param_1': 'r', 'param_2': 'p', 'param_3': 'f', 'param_4': 'v', 'param_5': 'm', 'nspname_1': 'pg_catalog'}
+web-1       | 2025-04-22 20:19:30,874 - sqlalchemy.engine.Engine - INFO - [cached since 0.007252s ago] {'table_name': 'orders', 'param_1': 'r', 'param_2': 'p', 'param_3': 'f', 'param_4': 'v', 'param_5': 'm', 'nspname_1': 'pg_catalog'}
+web-1       | 2025-04-22 20:19:30,875 INFO sqlalchemy.engine.Engine SELECT pg_catalog.pg_class.relname 
+web-1       | FROM pg_catalog.pg_class JOIN pg_catalog.pg_namespace ON pg_catalog.pg_namespace.oid = pg_catalog.pg_class.relnamespace 
+web-1       | WHERE pg_catalog.pg_class.relname = %(table_name)s AND pg_catalog.pg_class.relkind = ANY (ARRAY[%(param_1)s, %(param_2)s, %(param_3)s, %(param_4)s, %(param_5)s]) AND pg_catalog.pg_table_is_visible(pg_catalog.pg_class.oid) AND pg_catalog.pg_namespace.nspname != %(nspname_1)s
+web-1       | 2025-04-22 20:19:30,875 - sqlalchemy.engine.Engine - INFO - SELECT pg_catalog.pg_class.relname 
+web-1       | FROM pg_catalog.pg_class JOIN pg_catalog.pg_namespace ON pg_catalog.pg_namespace.oid = pg_catalog.pg_class.relnamespace 
+web-1       | WHERE pg_catalog.pg_class.relname = %(table_name)s AND pg_catalog.pg_class.relkind = ANY (ARRAY[%(param_1)s, %(param_2)s, %(param_3)s, %(param_4)s, %(param_5)s]) AND pg_catalog.pg_table_is_visible(pg_catalog.pg_class.oid) AND pg_catalog.pg_namespace.nspname != %(nspname_1)s
+web-1       | 2025-04-22 20:19:30,875 INFO sqlalchemy.engine.Engine [cached since 0.008096s ago] {'table_name': 'order_items', 'param_1': 'r', 'param_2': 'p', 'param_3': 'f', 'param_4': 'v', 'param_5': 'm', 'nspname_1': 'pg_catalog'}
+web-1       | 2025-04-22 20:19:30,875 - sqlalchemy.engine.Engine - INFO - [cached since 0.008096s ago] {'table_name': 'order_items', 'param_1': 'r', 'param_2': 'p', 'param_3': 'f', 'param_4': 'v', 'param_5': 'm', 'nspname_1': 'pg_catalog'}
+web-1       | 2025-04-22 20:19:30,876 INFO sqlalchemy.engine.Engine SELECT pg_catalog.pg_class.relname 
+web-1       | FROM pg_catalog.pg_class JOIN pg_catalog.pg_namespace ON pg_catalog.pg_namespace.oid = pg_catalog.pg_class.relnamespace 
+web-1       | WHERE pg_catalog.pg_class.relname = %(table_name)s AND pg_catalog.pg_class.relkind = ANY (ARRAY[%(param_1)s, %(param_2)s, %(param_3)s, %(param_4)s, %(param_5)s]) AND pg_catalog.pg_table_is_visible(pg_catalog.pg_class.oid) AND pg_catalog.pg_namespace.nspname != %(nspname_1)s
+web-1       | 2025-04-22 20:19:30,876 - sqlalchemy.engine.Engine - INFO - SELECT pg_catalog.pg_class.relname 
+web-1       | FROM pg_catalog.pg_class JOIN pg_catalog.pg_namespace ON pg_catalog.pg_namespace.oid = pg_catalog.pg_class.relnamespace 
+web-1       | WHERE pg_catalog.pg_class.relname = %(table_name)s AND pg_catalog.pg_class.relkind = ANY (ARRAY[%(param_1)s, %(param_2)s, %(param_3)s, %(param_4)s, %(param_5)s]) AND pg_catalog.pg_table_is_visible(pg_catalog.pg_class.oid) AND pg_catalog.pg_namespace.nspname != %(nspname_1)s
+web-1       | 2025-04-22 20:19:30,876 INFO sqlalchemy.engine.Engine [cached since 0.008911s ago] {'table_name': 'reviews', 'param_1': 'r', 'param_2': 'p', 'param_3': 'f', 'param_4': 'v', 'param_5': 'm', 'nspname_1': 'pg_catalog'}
+web-1       | 2025-04-22 20:19:30,876 - sqlalchemy.engine.Engine - INFO - [cached since 0.008911s ago] {'table_name': 'reviews', 'param_1': 'r', 'param_2': 'p', 'param_3': 'f', 'param_4': 'v', 'param_5': 'm', 'nspname_1': 'pg_catalog'}
+web-1       | 2025-04-22 20:19:30,876 INFO sqlalchemy.engine.Engine SELECT pg_catalog.pg_class.relname 
+web-1       | FROM pg_catalog.pg_class JOIN pg_catalog.pg_namespace ON pg_catalog.pg_namespace.oid = pg_catalog.pg_class.relnamespace 
+web-1       | WHERE pg_catalog.pg_class.relname = %(table_name)s AND pg_catalog.pg_class.relkind = ANY (ARRAY[%(param_1)s, %(param_2)s, %(param_3)s, %(param_4)s, %(param_5)s]) AND pg_catalog.pg_table_is_visible(pg_catalog.pg_class.oid) AND pg_catalog.pg_namespace.nspname != %(nspname_1)s
+web-1       | 2025-04-22 20:19:30,876 - sqlalchemy.engine.Engine - INFO - SELECT pg_catalog.pg_class.relname 
+web-1       | FROM pg_catalog.pg_class JOIN pg_catalog.pg_namespace ON pg_catalog.pg_namespace.oid = pg_catalog.pg_class.relnamespace 
+web-1       | WHERE pg_catalog.pg_class.relname = %(table_name)s AND pg_catalog.pg_class.relkind = ANY (ARRAY[%(param_1)s, %(param_2)s, %(param_3)s, %(param_4)s, %(param_5)s]) AND pg_catalog.pg_table_is_visible(pg_catalog.pg_class.oid) AND pg_catalog.pg_namespace.nspname != %(nspname_1)s
+web-1       | 2025-04-22 20:19:30,876 INFO sqlalchemy.engine.Engine [cached since 0.009527s ago] {'table_name': 'chats', 'param_1': 'r', 'param_2': 'p', 'param_3': 'f', 'param_4': 'v', 'param_5': 'm', 'nspname_1': 'pg_catalog'}
+web-1       | 2025-04-22 20:19:30,876 - sqlalchemy.engine.Engine - INFO - [cached since 0.009527s ago] {'table_name': 'chats', 'param_1': 'r', 'param_2': 'p', 'param_3': 'f', 'param_4': 'v', 'param_5': 'm', 'nspname_1': 'pg_catalog'}
+web-1       | 2025-04-22 20:19:30,877 INFO sqlalchemy.engine.Engine SELECT pg_catalog.pg_class.relname 
+web-1       | FROM pg_catalog.pg_class JOIN pg_catalog.pg_namespace ON pg_catalog.pg_namespace.oid = pg_catalog.pg_class.relnamespace 
+web-1       | WHERE pg_catalog.pg_class.relname = %(table_name)s AND pg_catalog.pg_class.relkind = ANY (ARRAY[%(param_1)s, %(param_2)s, %(param_3)s, %(param_4)s, %(param_5)s]) AND pg_catalog.pg_table_is_visible(pg_catalog.pg_class.oid) AND pg_catalog.pg_namespace.nspname != %(nspname_1)s
+web-1       | 2025-04-22 20:19:30,877 - sqlalchemy.engine.Engine - INFO - SELECT pg_catalog.pg_class.relname 
+web-1       | FROM pg_catalog.pg_class JOIN pg_catalog.pg_namespace ON pg_catalog.pg_namespace.oid = pg_catalog.pg_class.relnamespace 
+web-1       | WHERE pg_catalog.pg_class.relname = %(table_name)s AND pg_catalog.pg_class.relkind = ANY (ARRAY[%(param_1)s, %(param_2)s, %(param_3)s, %(param_4)s, %(param_5)s]) AND pg_catalog.pg_table_is_visible(pg_catalog.pg_class.oid) AND pg_catalog.pg_namespace.nspname != %(nspname_1)s
+web-1       | 2025-04-22 20:19:30,877 INFO sqlalchemy.engine.Engine [cached since 0.01018s ago] {'table_name': 'messages', 'param_1': 'r', 'param_2': 'p', 'param_3': 'f', 'param_4': 'v', 'param_5': 'm', 'nspname_1': 'pg_catalog'}
+web-1       | 2025-04-22 20:19:30,877 - sqlalchemy.engine.Engine - INFO - [cached since 0.01018s ago] {'table_name': 'messages', 'param_1': 'r', 'param_2': 'p', 'param_3': 'f', 'param_4': 'v', 'param_5': 'm', 'nspname_1': 'pg_catalog'}
+web-1       | 2025-04-22 20:19:30,879 INFO sqlalchemy.engine.Engine SELECT pg_catalog.pg_type.typname 
+web-1       | FROM pg_catalog.pg_type JOIN pg_catalog.pg_namespace ON pg_catalog.pg_namespace.oid = pg_catalog.pg_type.typnamespace 
+web-1       | WHERE pg_catalog.pg_type.typname = %(typname_1)s AND pg_catalog.pg_type_is_visible(pg_catalog.pg_type.oid) AND pg_catalog.pg_namespace.nspname != %(nspname_1)s
+web-1       | 2025-04-22 20:19:30,879 - sqlalchemy.engine.Engine - INFO - SELECT pg_catalog.pg_type.typname 
+web-1       | FROM pg_catalog.pg_type JOIN pg_catalog.pg_namespace ON pg_catalog.pg_namespace.oid = pg_catalog.pg_type.typnamespace 
+web-1       | WHERE pg_catalog.pg_type.typname = %(typname_1)s AND pg_catalog.pg_type_is_visible(pg_catalog.pg_type.oid) AND pg_catalog.pg_namespace.nspname != %(nspname_1)s
+web-1       | 2025-04-22 20:19:30,879 INFO sqlalchemy.engine.Engine [generated in 0.00039s] {'typname_1': 'moderationaction', 'nspname_1': 'pg_catalog'}
+web-1       | 2025-04-22 20:19:30,879 - sqlalchemy.engine.Engine - INFO - [generated in 0.00039s] {'typname_1': 'moderationaction', 'nspname_1': 'pg_catalog'}
+web-1       | 2025-04-22 20:19:30,880 INFO sqlalchemy.engine.Engine COMMIT
+web-1       | 2025-04-22 20:19:30,880 - sqlalchemy.engine.Engine - INFO - COMMIT
+web-1       | [32mINFO[0m:     Started server process [[36m8[0m]
+web-1       | [32mINFO[0m:     Waiting for application startup.
+web-1       | [32mINFO[0m:     Application startup complete.
+redis-1     | 1:C 22 Apr 2025 13:41:56.269 * oO0OoO0OoO0Oo Redis is starting oO0OoO0OoO0Oo
+redis-1     | 1:C 22 Apr 2025 13:41:56.269 * Redis version=7.4.2, bits=64, commit=00000000, modified=0, pid=1, just started
+redis-1     | 1:C 22 Apr 2025 13:41:56.269 # Warning: no config file specified, using the default config. In order to specify a config file use redis-server /path/to/redis.conf
+redis-1     | 1:M 22 Apr 2025 13:41:56.269 * monotonic clock: POSIX clock_gettime
+redis-1     | 1:M 22 Apr 2025 13:41:56.270 * Running mode=standalone, port=6379.
+redis-1     | 1:M 22 Apr 2025 13:41:56.270 * Server initialized
+redis-1     | 1:M 22 Apr 2025 13:41:56.270 * Ready to accept connections tcp
+redis-1     | 1:signal-handler (1745332744) Received SIGTERM scheduling shutdown...
+redis-1     | 1:M 22 Apr 2025 14:39:04.345 * User requested shutdown...
+redis-1     | 1:M 22 Apr 2025 14:39:04.345 * Saving the final RDB snapshot before exiting.
+redis-1     | 1:M 22 Apr 2025 14:39:04.351 * DB saved on disk
+redis-1     | 1:M 22 Apr 2025 14:39:04.351 # Redis is now ready to exit, bye bye...
+redis-1     | 1:C 22 Apr 2025 14:39:13.736 * oO0OoO0OoO0Oo Redis is starting oO0OoO0OoO0Oo
+redis-1     | 1:C 22 Apr 2025 14:39:13.736 * Redis version=7.4.2, bits=64, commit=00000000, modified=0, pid=1, just started
+redis-1     | 1:C 22 Apr 2025 14:39:13.736 # Warning: no config file specified, using the default config. In order to specify a config file use redis-server /path/to/redis.conf
+redis-1     | 1:M 22 Apr 2025 14:39:13.736 * monotonic clock: POSIX clock_gettime
+redis-1     | 1:M 22 Apr 2025 14:39:13.737 * Running mode=standalone, port=6379.
+redis-1     | 1:M 22 Apr 2025 14:39:13.738 * Server initialized
+redis-1     | 1:M 22 Apr 2025 14:39:13.738 * Loading RDB produced by version 7.4.2
+redis-1     | 1:M 22 Apr 2025 14:39:13.738 * RDB age 9 seconds
+postgres-1  | 
+redis-1     | 1:M 22 Apr 2025 14:39:13.738 * RDB memory usage when created 1.29 Mb
+postgres-1  | PostgreSQL Database directory appears to contain a database; Skipping initialization
+postgres-1  | 
+redis-1     | 1:M 22 Apr 2025 14:39:13.738 * Done loading RDB, keys loaded: 1, keys expired: 0.
+postgres-1  | 2025-04-22 19:30:01.710 UTC [1] LOG:  starting PostgreSQL 17.4 (Debian 17.4-1.pgdg120+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 12.2.0-14) 12.2.0, 64-bit
+redis-1     | 1:M 22 Apr 2025 14:39:13.738 * DB loaded from disk: 0.000 seconds
+nginx-1     | /docker-entrypoint.sh: /docker-entrypoint.d/ is not empty, will attempt to perform configuration
+postgres-1  | 2025-04-22 19:30:01.767 UTC [1] LOG:  listening on IPv4 address "0.0.0.0", port 5432
+nginx-1     | /docker-entrypoint.sh: Looking for shell scripts in /docker-entrypoint.d/
+nginx-1     | /docker-entrypoint.sh: Launching /docker-entrypoint.d/10-listen-on-ipv6-by-default.sh
+nginx-1     | 10-listen-on-ipv6-by-default.sh: info: Getting the checksum of /etc/nginx/conf.d/default.conf
+nginx-1     | 10-listen-on-ipv6-by-default.sh: info: /etc/nginx/conf.d/default.conf differs from the packaged version
+nginx-1     | /docker-entrypoint.sh: Launching /docker-entrypoint.d/20-envsubst-on-templates.sh
+nginx-1     | /docker-entrypoint.sh: Launching /docker-entrypoint.d/30-tune-worker-processes.sh
+nginx-1     | /docker-entrypoint.sh: Configuration complete; ready for start up
+nginx-1     | 2025/04/22 20:19:29 [notice] 1#1: using the "epoll" event method
+nginx-1     | 2025/04/22 20:19:29 [notice] 1#1: nginx/1.23.4
+redis-1     | 1:M 22 Apr 2025 14:39:13.738 * Ready to accept connections tcp
+redis-1     | 1:M 22 Apr 2025 15:39:14.078 * 1 changes in 3600 seconds. Saving...
+redis-1     | 1:M 22 Apr 2025 15:39:14.079 * Background saving started by pid 21
+redis-1     | 21:C 22 Apr 2025 15:39:14.090 * DB saved on disk
+postgres-1  | 2025-04-22 19:30:01.767 UTC [1] LOG:  listening on IPv6 address "::", port 5432
+redis-1     | 21:C 22 Apr 2025 15:39:14.090 * Fork CoW for RDB: current 0 MB, peak 0 MB, average 0 MB
+redis-1     | 1:M 22 Apr 2025 15:39:14.180 * Background saving terminated with success
+redis-1     | 1:M 22 Apr 2025 16:39:15.086 * 1 changes in 3600 seconds. Saving...
+redis-1     | 1:M 22 Apr 2025 16:39:15.087 * Background saving started by pid 22
+postgres-1  | 2025-04-22 19:30:01.775 UTC [1] LOG:  listening on Unix socket "/var/run/postgresql/.s.PGSQL.5432"
+postgres-1  | 2025-04-22 19:30:01.784 UTC [29] LOG:  database system was shut down at 2025-04-22 19:28:33 UTC
+postgres-1  | 2025-04-22 19:30:01.812 UTC [1] LOG:  database system is ready to accept connections
+postgres-1  | 2025-04-22 19:35:01.864 UTC [27] LOG:  checkpoint starting: time
+redis-1     | 22:C 22 Apr 2025 16:39:15.100 * DB saved on disk
+postgres-1  | 2025-04-22 19:35:01.885 UTC [27] LOG:  checkpoint complete: wrote 3 buffers (0.0%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.006 s, sync=0.003 s, total=0.021 s; sync files=2, longest=0.002 s, average=0.002 s; distance=0 kB, estimate=0 kB; lsn=0/19D79E8, redo lsn=0/19D7990
+redis-1     | 22:C 22 Apr 2025 16:39:15.100 * Fork CoW for RDB: current 0 MB, peak 0 MB, average 0 MB
+redis-1     | 1:M 22 Apr 2025 16:39:15.188 * Background saving terminated with success
+nginx-1     | 2025/04/22 20:19:29 [notice] 1#1: built by gcc 10.2.1 20210110 (Debian 10.2.1-6) 
+redis-1     | 1:M 22 Apr 2025 17:39:16.061 * 1 changes in 3600 seconds. Saving...
+redis-1     | 1:M 22 Apr 2025 17:39:16.062 * Background saving started by pid 23
+redis-1     | 23:C 22 Apr 2025 17:39:16.073 * DB saved on disk
+redis-1     | 23:C 22 Apr 2025 17:39:16.073 * Fork CoW for RDB: current 0 MB, peak 0 MB, average 0 MB
+redis-1     | 1:M 22 Apr 2025 17:39:16.163 * Background saving terminated with success
+redis-1     | 1:M 22 Apr 2025 18:39:17.001 * 1 changes in 3600 seconds. Saving...
+redis-1     | 1:M 22 Apr 2025 18:39:17.002 * Background saving started by pid 24
+nginx-1     | 2025/04/22 20:19:29 [notice] 1#1: OS: Linux 5.15.167.4-microsoft-standard-WSL2
+redis-1     | 24:C 22 Apr 2025 18:39:17.014 * DB saved on disk
+nginx-1     | 2025/04/22 20:19:29 [notice] 1#1: getrlimit(RLIMIT_NOFILE): 1048576:1048576
+nginx-1     | 2025/04/22 20:19:29 [notice] 1#1: start worker processes
+nginx-1     | 2025/04/22 20:19:29 [notice] 1#1: start worker process 28
+postgres-1  | 2025-04-22 19:37:00.470 UTC [48] ERROR:  column users.phone does not exist at character 176
+nginx-1     | 2025/04/22 20:19:29 [notice] 1#1: start worker process 29
+postgres-1  | 2025-04-22 19:37:00.470 UTC [48] STATEMENT:  SELECT users.id AS users_id, users.email AS users_email, users.username AS users_username, users.hashed_password AS users_hashed_password, users.full_name AS users_full_name, users.phone AS users_phone, users.role AS users_role, users.is_active AS users_is_active, users.avatar AS users_avatar, users.seller_rating AS users_seller_rating, users.seller_description AS users_seller_description, users.created_at AS users_created_at, users.updated_at AS users_updated_at, users.last_login AS users_last_login 
+postgres-1  | 	FROM users 
+postgres-1  | 	WHERE users.username = 'reazonvan' 
+postgres-1  | 	 LIMIT 1
+postgres-1  | 2025-04-22 19:37:01.533 UTC [48] ERROR:  column users.phone does not exist at character 176
+redis-1     | 24:C 22 Apr 2025 18:39:17.014 * Fork CoW for RDB: current 0 MB, peak 0 MB, average 0 MB
+nginx-1     | 2025/04/22 20:19:29 [notice] 1#1: start worker process 30
+postgres-1  | 2025-04-22 19:37:01.533 UTC [48] STATEMENT:  SELECT users.id AS users_id, users.email AS users_email, users.username AS users_username, users.hashed_password AS users_hashed_password, users.full_name AS users_full_name, users.phone AS users_phone, users.role AS users_role, users.is_active AS users_is_active, users.avatar AS users_avatar, users.seller_rating AS users_seller_rating, users.seller_description AS users_seller_description, users.created_at AS users_created_at, users.updated_at AS users_updated_at, users.last_login AS users_last_login 
+redis-1     | 1:M 22 Apr 2025 18:39:17.102 * Background saving terminated with success
+postgres-1  | 	FROM users 
+postgres-1  | 	WHERE users.email = 'Ivanpetrov20066.ip@gmail.com' 
+redis-1     | 1:signal-handler (1745350113) Received SIGTERM scheduling shutdown...
+postgres-1  | 	 LIMIT 1
+redis-1     | 1:M 22 Apr 2025 19:28:33.064 * User requested shutdown...
+nginx-1     | 2025/04/22 20:19:29 [notice] 1#1: start worker process 31
+postgres-1  | 2025-04-22 19:38:17.882 UTC [48] ERROR:  column users.phone does not exist at character 176
+nginx-1     | 2025/04/22 20:19:29 [notice] 1#1: start worker process 32
+postgres-1  | 2025-04-22 19:38:17.882 UTC [48] STATEMENT:  SELECT users.id AS users_id, users.email AS users_email, users.username AS users_username, users.hashed_password AS users_hashed_password, users.full_name AS users_full_name, users.phone AS users_phone, users.role AS users_role, users.is_active AS users_is_active, users.avatar AS users_avatar, users.seller_rating AS users_seller_rating, users.seller_description AS users_seller_description, users.created_at AS users_created_at, users.updated_at AS users_updated_at, users.last_login AS users_last_login 
+redis-1     | 1:M 22 Apr 2025 19:28:33.064 * Saving the final RDB snapshot before exiting.
+nginx-1     | 2025/04/22 20:19:29 [notice] 1#1: start worker process 33
+nginx-1     | 2025/04/22 20:19:29 [notice] 1#1: start worker process 34
+nginx-1     | 2025/04/22 20:19:29 [notice] 1#1: start worker process 35
+nginx-1     | 2025/04/22 20:19:29 [notice] 1#1: start worker process 36
+nginx-1     | 2025/04/22 20:19:29 [notice] 1#1: start worker process 37
+postgres-1  | 	FROM users 
+nginx-1     | 2025/04/22 20:19:29 [notice] 1#1: start worker process 38
+nginx-1     | 2025/04/22 20:19:29 [notice] 1#1: start worker process 39
+postgres-1  | 	WHERE users.username = 'reazonvan' 
+redis-1     | 1:M 22 Apr 2025 19:28:33.072 * DB saved on disk
+postgres-1  | 	 LIMIT 1
+redis-1     | 1:M 22 Apr 2025 19:28:33.072 # Redis is now ready to exit, bye bye...
+redis-1     | 1:C 22 Apr 2025 19:30:01.607 * oO0OoO0OoO0Oo Redis is starting oO0OoO0OoO0Oo
+postgres-1  | 2025-04-22 19:38:19.434 UTC [48] ERROR:  column users.phone does not exist at character 176
+postgres-1  | 2025-04-22 19:38:19.434 UTC [48] STATEMENT:  SELECT users.id AS users_id, users.email AS users_email, users.username AS users_username, users.hashed_password AS users_hashed_password, users.full_name AS users_full_name, users.phone AS users_phone, users.role AS users_role, users.is_active AS users_is_active, users.avatar AS users_avatar, users.seller_rating AS users_seller_rating, users.seller_description AS users_seller_description, users.created_at AS users_created_at, users.updated_at AS users_updated_at, users.last_login AS users_last_login 
+postgres-1  | 	FROM users 
+postgres-1  | 	WHERE users.email = 'Ivanpetrov20066.ip@gmail.com' 
+postgres-1  | 	 LIMIT 1
+postgres-1  | 2025-04-22 19:40:01.949 UTC [27] LOG:  checkpoint starting: time
+postgres-1  | 2025-04-22 19:40:02.380 UTC [27] LOG:  checkpoint complete: wrote 4 buffers (0.0%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.404 s, sync=0.009 s, total=0.432 s; sync files=4, longest=0.008 s, average=0.003 s; distance=8 kB, estimate=8 kB; lsn=0/19D9AC0, redo lsn=0/19D9A68
+postgres-1  | 2025-04-22 20:01:16.666 UTC [123] ERROR:  column users.phone does not exist at character 176
+postgres-1  | 2025-04-22 20:01:16.666 UTC [123] STATEMENT:  SELECT users.id AS users_id, users.email AS users_email, users.username AS users_username, users.hashed_password AS users_hashed_password, users.full_name AS users_full_name, users.phone AS users_phone, users.role AS users_role, users.is_active AS users_is_active, users.avatar AS users_avatar, users.seller_rating AS users_seller_rating, users.seller_description AS users_seller_description, users.created_at AS users_created_at, users.updated_at AS users_updated_at, users.last_login AS users_last_login 
+postgres-1  | 	FROM users 
+postgres-1  | 	WHERE users.username = 'reazonvan' 
+postgres-1  | 	 LIMIT 1
+postgres-1  | 2025-04-22 20:01:18.036 UTC [123] ERROR:  column users.phone does not exist at character 176
+postgres-1  | 2025-04-22 20:01:18.036 UTC [123] STATEMENT:  SELECT users.id AS users_id, users.email AS users_email, users.username AS users_username, users.hashed_password AS users_hashed_password, users.full_name AS users_full_name, users.phone AS users_phone, users.role AS users_role, users.is_active AS users_is_active, users.avatar AS users_avatar, users.seller_rating AS users_seller_rating, users.seller_description AS users_seller_description, users.created_at AS users_created_at, users.updated_at AS users_updated_at, users.last_login AS users_last_login 
+redis-1     | 1:C 22 Apr 2025 19:30:01.607 * Redis version=7.4.2, bits=64, commit=00000000, modified=0, pid=1, just started
+postgres-1  | 	FROM users 
+redis-1     | 1:C 22 Apr 2025 19:30:01.607 # Warning: no config file specified, using the default config. In order to specify a config file use redis-server /path/to/redis.conf
+redis-1     | 1:M 22 Apr 2025 19:30:01.608 * monotonic clock: POSIX clock_gettime
+postgres-1  | 	WHERE users.email = 'Ivanpetrov20066.ip@gmail.com' 
+redis-1     | 1:M 22 Apr 2025 19:30:01.609 * Running mode=standalone, port=6379.
+redis-1     | 1:M 22 Apr 2025 19:30:01.609 * Server initialized
+postgres-1  | 	 LIMIT 1
+postgres-1  | 2025-04-22 20:02:22.690 UTC [123] ERROR:  column users.phone does not exist at character 176
+postgres-1  | 2025-04-22 20:02:22.690 UTC [123] STATEMENT:  SELECT users.id AS users_id, users.email AS users_email, users.username AS users_username, users.hashed_password AS users_hashed_password, users.full_name AS users_full_name, users.phone AS users_phone, users.role AS users_role, users.is_active AS users_is_active, users.avatar AS users_avatar, users.seller_rating AS users_seller_rating, users.seller_description AS users_seller_description, users.created_at AS users_created_at, users.updated_at AS users_updated_at, users.last_login AS users_last_login 
+redis-1     | 1:M 22 Apr 2025 19:30:01.610 * Loading RDB produced by version 7.4.2
+postgres-1  | 	FROM users 
+redis-1     | 1:M 22 Apr 2025 19:30:01.610 * RDB age 88 seconds
+redis-1     | 1:M 22 Apr 2025 19:30:01.610 * RDB memory usage when created 1.29 Mb
+postgres-1  | 	WHERE users.username = 'reazonvan' 
+postgres-1  | 	 LIMIT 1
+postgres-1  | 2025-04-22 20:02:24.357 UTC [123] ERROR:  column users.phone does not exist at character 176
+postgres-1  | 2025-04-22 20:02:24.357 UTC [123] STATEMENT:  SELECT users.id AS users_id, users.email AS users_email, users.username AS users_username, users.hashed_password AS users_hashed_password, users.full_name AS users_full_name, users.phone AS users_phone, users.role AS users_role, users.is_active AS users_is_active, users.avatar AS users_avatar, users.seller_rating AS users_seller_rating, users.seller_description AS users_seller_description, users.created_at AS users_created_at, users.updated_at AS users_updated_at, users.last_login AS users_last_login 
+postgres-1  | 	FROM users 
+postgres-1  | 	WHERE users.email = 'Ivanpetrov20066.ip@gmail.com' 
+postgres-1  | 	 LIMIT 1
+postgres-1  | 2025-04-22 20:08:18.200 UTC [123] ERROR:  column users.phone does not exist at character 176
+postgres-1  | 2025-04-22 20:08:18.200 UTC [123] STATEMENT:  SELECT users.id AS users_id, users.email AS users_email, users.username AS users_username, users.hashed_password AS users_hashed_password, users.full_name AS users_full_name, users.phone AS users_phone, users.role AS users_role, users.is_active AS users_is_active, users.avatar AS users_avatar, users.seller_rating AS users_seller_rating, users.seller_description AS users_seller_description, users.created_at AS users_created_at, users.updated_at AS users_updated_at, users.last_login AS users_last_login 
+postgres-1  | 	FROM users 
+postgres-1  | 	WHERE users.username = 'reazonvan' 
+postgres-1  | 	 LIMIT 1
+redis-1     | 1:M 22 Apr 2025 19:30:01.610 * Done loading RDB, keys loaded: 1, keys expired: 0.
+redis-1     | 1:M 22 Apr 2025 19:30:01.610 * DB loaded from disk: 0.001 seconds
+redis-1     | 1:M 22 Apr 2025 19:30:01.610 * Ready to accept connections tcp
+redis-1     | 1:signal-handler (1745353099) Received SIGTERM scheduling shutdown...
+redis-1     | 1:M 22 Apr 2025 20:18:19.570 * User requested shutdown...
+redis-1     | 1:M 22 Apr 2025 20:18:19.571 * Saving the final RDB snapshot before exiting.
+redis-1     | 1:M 22 Apr 2025 20:18:19.582 * DB saved on disk
+postgres-1  | 2025-04-22 20:08:21.712 UTC [123] ERROR:  column users.phone does not exist at character 176
+redis-1     | 1:M 22 Apr 2025 20:18:19.582 # Redis is now ready to exit, bye bye...
+postgres-1  | 2025-04-22 20:08:21.712 UTC [123] STATEMENT:  SELECT users.id AS users_id, users.email AS users_email, users.username AS users_username, users.hashed_password AS users_hashed_password, users.full_name AS users_full_name, users.phone AS users_phone, users.role AS users_role, users.is_active AS users_is_active, users.avatar AS users_avatar, users.seller_rating AS users_seller_rating, users.seller_description AS users_seller_description, users.created_at AS users_created_at, users.updated_at AS users_updated_at, users.last_login AS users_last_login 
+redis-1     | 1:C 22 Apr 2025 20:19:29.110 * oO0OoO0OoO0Oo Redis is starting oO0OoO0OoO0Oo
+redis-1     | 1:C 22 Apr 2025 20:19:29.110 * Redis version=7.4.2, bits=64, commit=00000000, modified=0, pid=1, just started
+redis-1     | 1:C 22 Apr 2025 20:19:29.110 # Warning: no config file specified, using the default config. In order to specify a config file use redis-server /path/to/redis.conf
+redis-1     | 1:M 22 Apr 2025 20:19:29.110 * monotonic clock: POSIX clock_gettime
+redis-1     | 1:M 22 Apr 2025 20:19:29.111 * Running mode=standalone, port=6379.
+redis-1     | 1:M 22 Apr 2025 20:19:29.112 * Server initialized
+redis-1     | 1:M 22 Apr 2025 20:19:29.112 * Loading RDB produced by version 7.4.2
+redis-1     | 1:M 22 Apr 2025 20:19:29.112 * RDB age 70 seconds
+redis-1     | 1:M 22 Apr 2025 20:19:29.112 * RDB memory usage when created 1.29 Mb
+redis-1     | 1:M 22 Apr 2025 20:19:29.112 * Done loading RDB, keys loaded: 1, keys expired: 0.
+redis-1     | 1:M 22 Apr 2025 20:19:29.112 * DB loaded from disk: 0.000 seconds
+redis-1     | 1:M 22 Apr 2025 20:19:29.112 * Ready to accept connections tcp
+postgres-1  | 	FROM users 
+postgres-1  | 	WHERE users.email = 'Ivanpetrov20066.ip@gmail.com' 
+postgres-1  | 	 LIMIT 1
+postgres-1  | 2025-04-22 20:08:24.469 UTC [123] ERROR:  column users.phone does not exist at character 176
+postgres-1  | 2025-04-22 20:08:24.469 UTC [123] STATEMENT:  SELECT users.id AS users_id, users.email AS users_email, users.username AS users_username, users.hashed_password AS users_hashed_password, users.full_name AS users_full_name, users.phone AS users_phone, users.role AS users_role, users.is_active AS users_is_active, users.avatar AS users_avatar, users.seller_rating AS users_seller_rating, users.seller_description AS users_seller_description, users.created_at AS users_created_at, users.updated_at AS users_updated_at, users.last_login AS users_last_login 
+postgres-1  | 	FROM users 
+postgres-1  | 	WHERE users.phone = '+7' 
+postgres-1  | 	 LIMIT 1
+postgres-1  | 2025-04-22 20:10:39.475 UTC [123] ERROR:  column users.phone does not exist at character 176
+postgres-1  | 2025-04-22 20:10:39.475 UTC [123] STATEMENT:  SELECT users.id AS users_id, users.email AS users_email, users.username AS users_username, users.hashed_password AS users_hashed_password, users.full_name AS users_full_name, users.phone AS users_phone, users.role AS users_role, users.is_active AS users_is_active, users.avatar AS users_avatar, users.seller_rating AS users_seller_rating, users.seller_description AS users_seller_description, users.created_at AS users_created_at, users.updated_at AS users_updated_at, users.last_login AS users_last_login 
+postgres-1  | 	FROM users 
+postgres-1  | 	WHERE users.phone = '+7' 
+postgres-1  | 	 LIMIT 1
+postgres-1  | 2025-04-22 20:10:41.440 UTC [123] ERROR:  column users.phone does not exist at character 176
+postgres-1  | 2025-04-22 20:10:41.440 UTC [123] STATEMENT:  SELECT users.id AS users_id, users.email AS users_email, users.username AS users_username, users.hashed_password AS users_hashed_password, users.full_name AS users_full_name, users.phone AS users_phone, users.role AS users_role, users.is_active AS users_is_active, users.avatar AS users_avatar, users.seller_rating AS users_seller_rating, users.seller_description AS users_seller_description, users.created_at AS users_created_at, users.updated_at AS users_updated_at, users.last_login AS users_last_login 
+postgres-1  | 	FROM users 
+postgres-1  | 	WHERE users.phone = '+7' 
+postgres-1  | 	 LIMIT 1
+postgres-1  | 2025-04-22 20:10:41.986 UTC [123] ERROR:  column users.phone does not exist at character 176
+postgres-1  | 2025-04-22 20:10:41.986 UTC [123] STATEMENT:  SELECT users.id AS users_id, users.email AS users_email, users.username AS users_username, users.hashed_password AS users_hashed_password, users.full_name AS users_full_name, users.phone AS users_phone, users.role AS users_role, users.is_active AS users_is_active, users.avatar AS users_avatar, users.seller_rating AS users_seller_rating, users.seller_description AS users_seller_description, users.created_at AS users_created_at, users.updated_at AS users_updated_at, users.last_login AS users_last_login 
+postgres-1  | 	FROM users 
+postgres-1  | 	WHERE users.phone = '+7' 
+postgres-1  | 	 LIMIT 1
+postgres-1  | 2025-04-22 20:10:42.413 UTC [123] ERROR:  column users.phone does not exist at character 176
+postgres-1  | 2025-04-22 20:10:42.413 UTC [123] STATEMENT:  SELECT users.id AS users_id, users.email AS users_email, users.username AS users_username, users.hashed_password AS users_hashed_password, users.full_name AS users_full_name, users.phone AS users_phone, users.role AS users_role, users.is_active AS users_is_active, users.avatar AS users_avatar, users.seller_rating AS users_seller_rating, users.seller_description AS users_seller_description, users.created_at AS users_created_at, users.updated_at AS users_updated_at, users.last_login AS users_last_login 
+postgres-1  | 	FROM users 
+postgres-1  | 	WHERE users.phone = '+7' 
+postgres-1  | 	 LIMIT 1
+postgres-1  | 2025-04-22 20:10:45.128 UTC [123] ERROR:  column users.phone does not exist at character 176
+postgres-1  | 2025-04-22 20:10:45.128 UTC [123] STATEMENT:  SELECT users.id AS users_id, users.email AS users_email, users.username AS users_username, users.hashed_password AS users_hashed_password, users.full_name AS users_full_name, users.phone AS users_phone, users.role AS users_role, users.is_active AS users_is_active, users.avatar AS users_avatar, users.seller_rating AS users_seller_rating, users.seller_description AS users_seller_description, users.created_at AS users_created_at, users.updated_at AS users_updated_at, users.last_login AS users_last_login 
+postgres-1  | 	FROM users 
+postgres-1  | 	WHERE users.phone = '+7' 
+postgres-1  | 	 LIMIT 1
+postgres-1  | 2025-04-22 20:10:57.494 UTC [123] ERROR:  column users.phone does not exist at character 176
+postgres-1  | 2025-04-22 20:10:57.494 UTC [123] STATEMENT:  SELECT users.id AS users_id, users.email AS users_email, users.username AS users_username, users.hashed_password AS users_hashed_password, users.full_name AS users_full_name, users.phone AS users_phone, users.role AS users_role, users.is_active AS users_is_active, users.avatar AS users_avatar, users.seller_rating AS users_seller_rating, users.seller_description AS users_seller_description, users.created_at AS users_created_at, users.updated_at AS users_updated_at, users.last_login AS users_last_login 
+postgres-1  | 	FROM users 
+postgres-1  | 	WHERE users.phone = '+7' 
+postgres-1  | 	 LIMIT 1
+postgres-1  | 2025-04-22 20:18:19.559 UTC [1] LOG:  received fast shutdown request
+postgres-1  | 2025-04-22 20:18:19.563 UTC [1] LOG:  aborting any active transactions
+postgres-1  | 2025-04-22 20:18:19.567 UTC [1] LOG:  background worker "logical replication launcher" (PID 32) exited with exit code 1
+postgres-1  | 2025-04-22 20:18:19.567 UTC [27] LOG:  shutting down
+postgres-1  | 2025-04-22 20:18:19.576 UTC [27] LOG:  checkpoint starting: shutdown immediate
+postgres-1  | 2025-04-22 20:18:19.596 UTC [27] LOG:  checkpoint complete: wrote 0 buffers (0.0%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.001 s, sync=0.001 s, total=0.030 s; sync files=0, longest=0.000 s, average=0.000 s; distance=0 kB, estimate=7 kB; lsn=0/19D9B70, redo lsn=0/19D9B70
+postgres-1  | 2025-04-22 20:18:19.605 UTC [1] LOG:  database system is shut down
+postgres-1  | 
+postgres-1  | PostgreSQL Database directory appears to contain a database; Skipping initialization
+postgres-1  | 
+postgres-1  | 2025-04-22 20:19:29.144 UTC [1] LOG:  starting PostgreSQL 17.4 (Debian 17.4-1.pgdg120+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 12.2.0-14) 12.2.0, 64-bit
+postgres-1  | 2025-04-22 20:19:29.145 UTC [1] LOG:  listening on IPv4 address "0.0.0.0", port 5432
+postgres-1  | 2025-04-22 20:19:29.145 UTC [1] LOG:  listening on IPv6 address "::", port 5432
+postgres-1  | 2025-04-22 20:19:29.150 UTC [1] LOG:  listening on Unix socket "/var/run/postgresql/.s.PGSQL.5432"
+postgres-1  | 2025-04-22 20:19:29.158 UTC [29] LOG:  database system was shut down at 2025-04-22 20:18:19 UTC
+postgres-1  | 2025-04-22 20:19:29.168 UTC [1] LOG:  database system is ready to accept connections

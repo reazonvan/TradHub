@@ -1,0 +1,91 @@
+version: '3'
+
+services:
+  web:
+    build: 
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    volumes:
+      - .:/app
+      - ./logs:/app/logs
+      - ./static:/app/static
+      - ./media:/app/media
+    env_file:
+      - .env
+    depends_on:
+      - postgres
+      - redis
+    restart: always
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+    command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload --log-level debug
+
+  postgres:
+    image: postgres:17
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+    env_file:
+      - .env
+    ports:
+      - "5432:5432"
+    restart: always
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  redis:
+    image: redis:latest
+    restart: always
+    ports:
+      - "6379:6379"
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  celery:
+    build: .
+    command: celery -A app.worker worker --loglevel=debug
+    volumes:
+      - .:/app
+      - ./logs:/app/logs
+    env_file:
+      - .env
+    depends_on:
+      - web
+      - redis
+      - postgres
+    restart: always
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  nginx:
+    build: ./nginx
+    ports:
+      - "80:80"
+    volumes:
+      - ./static:/var/www/static
+      - ./media:/var/www/media
+      - ./logs/nginx:/var/log/nginx
+    depends_on:
+      - web
+    restart: always
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+volumes:
+  postgres_data: 

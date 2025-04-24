@@ -1,0 +1,24 @@
+# Основные зависимости
+fastapi==0.104.1
+uvicorn==0.23.2
+jinja2==3.1.2
+sqlalchemy==2.0.19
+pydantic==2.3.0
+python-jose[cryptography]==3.3.0
+passlib[bcrypt]==1.7.4
+python-multipart==0.0.6
+alembic==1.11.1
+psycopg2-binary==2.9.7
+
+# WebSockets
+websockets==11.0.3
+
+# Шаблонизация и формы
+python-dotenv==1.0.0
+
+# Асинхронные задачи
+celery==5.3.1
+redis==4.6.0
+
+# Валидация данных
+email-validator==2.0.0 

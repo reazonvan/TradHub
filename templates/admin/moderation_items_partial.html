@@ -1,0 +1,54 @@
+{% for item in items %}
+<div class="bg-white rounded-lg shadow-sm overflow-hidden">
+    <div class="relative">
+        <img src="{{ item.thumbnail|default('/static/images/placeholder.jpg') }}" alt="{{ item.title }}" class="w-full h-48 object-cover">
+        <div class="absolute top-2 right-2">
+            <span class="badge badge-{{ item.status_badge }}">{{ item.status_text }}</span>
+        </div>
+    </div>
+    
+    <div class="p-4">
+        <h3 class="font-bold text-lg mb-2 truncate">{{ item.title }}</h3>
+        <div class="flex justify-between mb-3">
+            <span class="text-accent-teal font-bold">{{ item.price|format_price }}</span>
+            <span class="text-sm text-gray-500">{{ item.created_at|time_ago }}</span>
+        </div>
+        
+        <p class="text-gray-600 text-sm mb-4 line-clamp-2">{{ item.description }}</p>
+        
+        <div class="grid grid-cols-2 gap-2 mb-4 text-sm">
+            <div>
+                <span class="text-gray-500">Игра:</span>
+                <span class="font-medium">{{ item.game.name if item.game else 'Не указана' }}</span>
+            </div>
+            <div>
+                <span class="text-gray-500">Продавец:</span>
+                <span class="font-medium">{{ item.seller.username }}</span>
+            </div>
+        </div>
+        
+        <div class="flex justify-end gap-2">
+            <button class="btn-secondary text-sm"
+                    hx-get="/admin/products/{{ item.id }}/details"
+                    hx-target="#moderation-modal-content"
+                    onclick="openModal()">
+                Посмотреть детали
+            </button>
+            
+            {% if item.status == 'moderation' %}
+            <button class="btn-primary text-sm"
+                    hx-put="/admin/products/{{ item.id }}/approve"
+                    hx-swap="outerHTML"
+                    hx-target="closest div.bg-white">
+                Одобрить
+            </button>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% else %}
+<div class="col-span-full py-8 text-center">
+    <p class="text-xl text-gray-500">Предметы не найдены</p>
+    <p class="text-gray-400 mt-2">Попробуйте изменить параметры фильтров</p>
+</div>
+{% endfor %} 

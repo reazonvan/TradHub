@@ -1,0 +1,134 @@
+{% extends "base.html" %}
+
+{% block title %}Редактирование профиля - TradeHub{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row">
+        <!-- Боковое меню профиля -->
+        <div class="col-lg-3 mb-4">
+            <div class="card shadow-sm">
+                <div class="card-body text-center">
+                    {% if user.avatar %}
+                    <img src="{{ url_for('static', path=user.avatar) }}" alt="{{ user.username }}" class="rounded-circle mb-3" width="120" height="120">
+                    {% else %}
+                    <div class="rounded-circle bg-secondary text-white d-flex align-items-center justify-content-center mx-auto mb-3" style="width: 120px; height: 120px; font-size: 3rem;">
+                        {{ user.username[0] | upper }}
+                    </div>
+                    {% endif %}
+                    <h4 class="mb-0">{{ user.username }}</h4>
+                    <p class="text-muted">{{ user.full_name }}</p>
+                </div>
+                
+                <div class="list-group list-group-flush">
+                    <a href="{{ url_for('user_profile') }}" class="list-group-item list-group-item-action">
+                        <i class="fas fa-user me-2"></i> Мой профиль
+                    </a>
+                    <a href="{{ url_for('update_user_profile') }}" class="list-group-item list-group-item-action active">
+                        <i class="fas fa-edit me-2"></i> Редактировать профиль
+                    </a>
+                    <a href="{{ url_for('user_orders') }}" class="list-group-item list-group-item-action">
+                        <i class="fas fa-shopping-bag me-2"></i> Мои заказы
+                    </a>
+                    {% if user.role == 'seller' %}
+                    <a href="{{ url_for('seller_products') }}" class="list-group-item list-group-item-action">
+                        <i class="fas fa-box me-2"></i> Мои товары
+                    </a>
+                    <a href="{{ url_for('seller_orders') }}" class="list-group-item list-group-item-action">
+                        <i class="fas fa-store me-2"></i> Заказы на мои товары
+                    </a>
+                    {% endif %}
+                    <a href="{{ url_for('user_wishlist') }}" class="list-group-item list-group-item-action">
+                        <i class="fas fa-heart me-2"></i> Избранное
+                    </a>
+                    <a href="{{ url_for('user_security') }}" class="list-group-item list-group-item-action">
+                        <i class="fas fa-shield-alt me-2"></i> Безопасность
+                    </a>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Основное содержимое редактирования профиля -->
+        <div class="col-lg-9">
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-white">
+                    <h5 class="mb-0">Редактирование профиля</h5>
+                </div>
+                <div class="card-body">
+                    {% if error %}
+                    <div class="alert alert-danger" role="alert">
+                        {{ error }}
+                    </div>
+                    {% endif %}
+                    
+                    {% if success %}
+                    <div class="alert alert-success" role="alert">
+                        {{ success }}
+                    </div>
+                    {% endif %}
+                    
+                    <form method="post" action="{{ url_for('update_user_profile') }}">
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label for="username" class="form-label">Имя пользователя</label>
+                                <input type="text" class="form-control" id="username" name="username" value="{{ user.username }}" disabled>
+                                <div class="form-text text-muted">Имя пользователя нельзя изменить</div>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="email" class="form-label">Email</label>
+                                <input type="email" class="form-control" id="email" name="email" value="{{ user.email }}">
+                            </div>
+                        </div>
+                        
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label for="full_name" class="form-label">Полное имя</label>
+                                <input type="text" class="form-control" id="full_name" name="full_name" value="{{ user.full_name or '' }}">
+                            </div>
+                            <div class="col-md-6">
+                                <label for="phone" class="form-label">Телефон</label>
+                                <input type="tel" class="form-control" id="phone" name="phone" value="{{ user.phone or '' }}" placeholder="+7XXXXXXXXXX">
+                                <div class="form-text text-muted">В международном формате, например: +7XXXXXXXXXX</div>
+                            </div>
+                        </div>
+                        
+                        {% if user.role == 'seller' %}
+                        <div class="mb-3">
+                            <label for="seller_description" class="form-label">Описание продавца</label>
+                            <textarea class="form-control" id="seller_description" name="seller_description" rows="4">{{ user.seller_description or '' }}</textarea>
+                            <div class="form-text text-muted">Расскажите о себе, своих товарах и услугах</div>
+                        </div>
+                        {% endif %}
+                        
+                        <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                            <a href="{{ url_for('user_profile') }}" class="btn btn-outline-secondary">Отмена</a>
+                            <button type="submit" class="btn btn-primary">Сохранить изменения</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            
+            <div class="card shadow-sm">
+                <div class="card-header bg-white">
+                    <h5 class="mb-0">Обновить аватар</h5>
+                </div>
+                <div class="card-body">
+                    <form method="post" action="{{ url_for('upload_avatar') }}" enctype="multipart/form-data">
+                        <div class="mb-3">
+                            <label for="avatar" class="form-label">Загрузите новое изображение</label>
+                            <input class="form-control" type="file" id="avatar" name="file" accept="image/*">
+                            <div class="form-text text-muted">
+                                Максимальный размер файла: 5 МБ. Поддерживаемые форматы: JPEG, PNG, GIF.
+                            </div>
+                        </div>
+                        
+                        <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                            <button type="submit" class="btn btn-primary">Загрузить аватар</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

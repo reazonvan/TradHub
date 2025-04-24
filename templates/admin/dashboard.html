@@ -1,0 +1,612 @@
+{% extends "base.html" %}
+
+{% block title %}Панель администратора - TradeHub{% endblock %}
+
+{% block head %}
+<style>
+    .stat-card {
+        background-color: white;
+        border-radius: 0.5rem;
+        box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.1);
+        padding: 1.25rem;
+        display: flex;
+        flex-direction: column;
+        transition: all 0.3s ease;
+    }
+    .stat-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    }
+    .stat-value {
+        font-size: 1.75rem;
+        font-weight: 700;
+        margin-top: 0.5rem;
+    }
+    .progress-bar {
+        height: 0.5rem;
+        margin-top: 0.5rem;
+        background-color: #e5e7eb;
+        border-radius: 9999px;
+        overflow: hidden;
+    }
+    .progress-value {
+        height: 100%;
+        background-color: #36B5A2;
+        transition: width 1s ease-in-out;
+    }
+    /* Стили для классов */
+    .text-accent-teal {
+        color: #36B5A2;
+    }
+    .hover\:bg-accent-teal:hover {
+        background-color: #36B5A2;
+    }
+    .border-accent-teal {
+        border-color: #36B5A2;
+    }
+    .border-accent-coral {
+        border-color: #FF6B6B;
+    }
+    .border-accent-purple {
+        border-color: #9C6ADE;
+    }
+    .border-accent-blue {
+        border-color: #3652B5;
+    }
+    .chart-container {
+        position: relative;
+        height: 250px;
+        width: 100%;
+    }
+    .dashboard-action-link {
+        transition: all 0.2s ease;
+    }
+    .dashboard-action-link:hover {
+        transform: translateX(5px);
+    }
+    .action-badge {
+        display: inline-block;
+        padding: 0.25rem 0.5rem;
+        border-radius: 9999px;
+        font-size: 0.75rem;
+        font-weight: 600;
+        color: white;
+    }
+    .badge-success {
+        background-color: #36B5A2;
+    }
+    .badge-warning {
+        background-color: #F59E0B;
+    }
+    .badge-danger {
+        background-color: #FF6B6B;
+    }
+    .filter-active {
+        background-color: #36B5A2;
+        color: white;
+    }
+</style>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@3.7.1/dist/chart.min.js"></script>
+<script src="https://unpkg.com/alpinejs@3.10.3/dist/cdn.min.js" defer></script>
+{% endblock %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-8">
+    <div class="flex justify-between items-center mb-8">
+        <h1 class="text-3xl font-display font-bold">Панель администратора</h1>
+        <div class="flex space-x-2">
+            <button 
+                class="px-4 py-2 bg-gray-100 rounded-lg hover:bg-accent-teal hover:text-white transition-all" 
+                hx-get="/admin/refresh-dashboard" 
+                hx-target="#dashboard-content" 
+                hx-swap="innerHTML"
+                hx-indicator="#refresh-indicator">
+                <span>Обновить данные</span>
+            </button>
+            <div id="refresh-indicator" class="htmx-indicator flex items-center">
+                <svg class="animate-spin h-5 w-5 text-accent-teal" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                </svg>
+            </div>
+        </div>
+    </div>
+    
+    <div id="dashboard-content">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
+            <!-- Статистика пользователей -->
+            <div class="stat-card" x-data="{ showDetails: false }">
+                <div class="flex justify-between">
+                    <h3 class="text-lg font-semibold text-gray-700">Пользователи</h3>
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-accent-teal" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+                    </svg>
+                </div>
+                <div class="stat-value">{{ stats.users.total }}</div>
+                <div class="flex justify-between">
+                    <p class="text-sm text-gray-500 mt-1">Активных: {{ stats.users.active }}</p>
+                    <p class="text-sm text-gray-500 mt-1">Продавцов: {{ stats.users.sellers }}</p>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-value" style="width: {{ (stats.users.active / stats.users.total * 100) if stats.users.total > 0 else 0 }}%"></div>
+                </div>
+                <div class="flex justify-between mt-3">
+                    <p class="text-xs text-gray-500">+{{ stats.users.new_month }} за месяц</p>
+                    <button @click="showDetails = !showDetails" class="text-xs text-accent-teal hover:underline">
+                        {{ 'Скрыть детали' if showDetails else 'Показать детали' }}
+                    </button>
+                </div>
+                <div x-show="showDetails" x-transition class="mt-3 pt-3 border-t border-gray-100">
+                    <div class="flex justify-between text-xs">
+                        <span>Админы:</span>
+                        <span class="font-semibold">{{ stats.users.admins|default(1) }}</span>
+                    </div>
+                    <div class="flex justify-between text-xs mt-1">
+                        <span>Неактивные:</span>
+                        <span class="font-semibold">{{ stats.users.total - stats.users.active }}</span>
+                    </div>
+                    <a href="/admin/users" class="mt-3 text-xs bg-accent-teal text-white py-1 px-2 rounded inline-block">Управление пользователями</a>
+                </div>
+            </div>
+            
+            <!-- Статистика товаров -->
+            <div class="stat-card" x-data="{ showDetails: false }">
+                <div class="flex justify-between">
+                    <h3 class="text-lg font-semibold text-gray-700">Товары</h3>
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-accent-teal" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+                    </svg>
+                </div>
+                <div class="stat-value">{{ stats.products.total }}</div>
+                <div class="flex justify-between">
+                    <p class="text-sm text-gray-500 mt-1">Активных: {{ stats.products.active }}</p>
+                    <p class="text-sm text-gray-500 mt-1">На модерации: <span class="font-semibold text-amber-500">{{ stats.products.moderation }}</span></p>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-value" style="width: {{ (stats.products.active / stats.products.total * 100) if stats.products.total > 0 else 0 }}%"></div>
+                </div>
+                <div class="flex justify-between mt-3">
+                    <a href="/admin/products/moderation" class="text-xs text-white bg-amber-500 px-2 py-1 rounded">
+                        Модерация {{ stats.products.moderation if stats.products.moderation > 0 else '' }}
+                    </a>
+                    <button @click="showDetails = !showDetails" class="text-xs text-accent-teal hover:underline">
+                        {{ 'Скрыть детали' if showDetails else 'Показать детали' }}
+                    </button>
+                </div>
+                <div x-show="showDetails" x-transition class="mt-3 pt-3 border-t border-gray-100">
+                    <div class="flex justify-between text-xs">
+                        <span>Отклонённые:</span>
+                        <span class="font-semibold">{{ stats.products.hidden|default(0) }}</span>
+                    </div>
+                    <div class="flex justify-between text-xs mt-1">
+                        <span>Средняя цена:</span>
+                        <span class="font-semibold">₽ {{ '{:,.0f}'.format(stats.products.avg_price|default(0)) }}</span>
+                    </div>
+                    <a href="/admin/products" class="mt-3 text-xs bg-accent-teal text-white py-1 px-2 rounded inline-block">Все товары</a>
+                </div>
+            </div>
+            
+            <!-- Статистика заказов -->
+            <div class="stat-card" x-data="{ showDetails: false }">
+                <div class="flex justify-between">
+                    <h3 class="text-lg font-semibold text-gray-700">Заказы</h3>
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-accent-teal" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+                    </svg>
+                </div>
+                <div class="stat-value">{{ stats.orders.total }}</div>
+                <div class="flex justify-between">
+                    <p class="text-sm text-gray-500 mt-1">Завершено: {{ stats.orders.completed }}</p>
+                    <p class="text-sm text-gray-500 mt-1">Ожидает: <span class="font-semibold text-amber-500">{{ stats.orders.pending }}</span></p>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-value" style="width: {{ (stats.orders.completed / stats.orders.total * 100) if stats.orders.total > 0 else 0 }}%"></div>
+                </div>
+                <div class="flex justify-between mt-3">
+                    <p class="text-xs text-gray-500">+{{ stats.orders.new_month }} за месяц</p>
+                    <button @click="showDetails = !showDetails" class="text-xs text-accent-teal hover:underline">
+                        {{ 'Скрыть детали' if showDetails else 'Показать детали' }}
+                    </button>
+                </div>
+                <div x-show="showDetails" x-transition class="mt-3 pt-3 border-t border-gray-100">
+                    <div class="flex justify-between text-xs">
+                        <span>Отменено:</span>
+                        <span class="font-semibold">{{ stats.orders.cancelled|default(0) }}</span>
+                    </div>
+                    <div class="flex justify-between text-xs mt-1">
+                        <span>Среднее время выполнения:</span>
+                        <span class="font-semibold">{{ stats.orders.avg_completion_time|default('24ч') }}</span>
+                    </div>
+                    <a href="/admin/orders" class="mt-3 text-xs bg-accent-teal text-white py-1 px-2 rounded inline-block">Управление заказами</a>
+                </div>
+            </div>
+            
+            <!-- Статистика продаж -->
+            <div class="stat-card" x-data="{ showDetails: false }">
+                <div class="flex justify-between">
+                    <h3 class="text-lg font-semibold text-gray-700">Продажи</h3>
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-accent-teal" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                </div>
+                <div class="stat-value">₽ {{ '{:,.0f}'.format(stats.sales.total) }}</div>
+                <div class="flex justify-between">
+                    <p class="text-sm text-gray-500 mt-1">Транзакций: {{ stats.orders.completed }}</p>
+                    <p class="text-sm text-gray-500 mt-1">
+                        {% set month_sales = stats.sales.month|default(0) %}
+                        {% if month_sales > 0 %}
+                            <span class="text-green-600">↑ {{ '{:,.0f}'.format(month_sales) }}</span>
+                        {% elif month_sales < 0 %}
+                            <span class="text-red-600">↓ {{ '{:,.0f}'.format(month_sales|abs) }}</span>
+                        {% else %}
+                            <span>0</span>
+                        {% endif %}
+                        за месяц
+                    </p>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-value" style="width: {{ (stats.sales.month / stats.sales.total * 100) if stats.sales.month and stats.sales.total > 0 else 0 }}%"></div>
+                </div>
+                <div class="flex justify-between mt-3">
+                    <p class="text-xs text-gray-500">Средний чек: ₽ {{ '{:,.0f}'.format(stats.sales.avg_order|default(0)) }}</p>
+                    <button @click="showDetails = !showDetails" class="text-xs text-accent-teal hover:underline">
+                        {{ 'Скрыть детали' if showDetails else 'Показать детали' }}
+                    </button>
+                </div>
+                <div x-show="showDetails" x-transition class="mt-3 pt-3 border-t border-gray-100">
+                    <div class="flex justify-between text-xs">
+                        <span>Комиссия площадки:</span>
+                        <span class="font-semibold">₽ {{ '{:,.0f}'.format(stats.sales.platform_fee|default(stats.sales.total * 0.1)) }}</span>
+                    </div>
+                    <div class="flex justify-between text-xs mt-1">
+                        <span>Платежная система:</span>
+                        <span class="font-semibold">₽ {{ '{:,.0f}'.format(stats.sales.payment_fee|default(stats.sales.total * 0.02)) }}</span>
+                    </div>
+                    <a href="/admin/analytics/sales" class="mt-3 text-xs bg-accent-teal text-white py-1 px-2 rounded inline-block">Финансовый отчет</a>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Графики и аналитика -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-10">
+            <!-- График продаж -->
+            <div class="bg-white rounded-lg shadow p-6">
+                <div class="flex justify-between items-center mb-4">
+                    <h3 class="text-xl font-display font-bold">Продажи за период</h3>
+                    <div class="flex space-x-2">
+                        <button class="px-2 py-1 text-xs rounded filter-active" id="sales-week">Неделя</button>
+                        <button class="px-2 py-1 text-xs rounded hover:bg-gray-100" id="sales-month">Месяц</button>
+                        <button class="px-2 py-1 text-xs rounded hover:bg-gray-100" id="sales-year">Год</button>
+                    </div>
+                </div>
+                <div class="chart-container">
+                    <canvas id="salesChart"></canvas>
+                </div>
+            </div>
+            
+            <!-- График пользователей -->
+            <div class="bg-white rounded-lg shadow p-6">
+                <div class="flex justify-between items-center mb-4">
+                    <h3 class="text-xl font-display font-bold">Активность пользователей</h3>
+                    <div class="flex space-x-2">
+                        <button class="px-2 py-1 text-xs rounded filter-active" id="users-registrations">Регистрации</button>
+                        <button class="px-2 py-1 text-xs rounded hover:bg-gray-100" id="users-logins">Входы</button>
+                        <button class="px-2 py-1 text-xs rounded hover:bg-gray-100" id="users-purchases">Покупки</button>
+                    </div>
+                </div>
+                <div class="chart-container">
+                    <canvas id="usersChart"></canvas>
+                </div>
+            </div>
+            
+            <!-- Распределение категорий товаров -->
+            <div class="bg-white rounded-lg shadow p-6">
+                <h3 class="text-xl font-display font-bold mb-4">Популярные категории</h3>
+                <div class="chart-container">
+                    <canvas id="categoriesChart"></canvas>
+                </div>
+            </div>
+            
+            <!-- География заказов -->
+            <div class="bg-white rounded-lg shadow p-6">
+                <h3 class="text-xl font-display font-bold mb-4">География продаж</h3>
+                <div class="chart-container">
+                    <canvas id="geographyChart"></canvas>
+                </div>
+            </div>
+        </div>
+        
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <!-- Быстрый доступ к действиям -->
+            <div class="bg-white rounded-lg shadow p-6">
+                <h3 class="text-xl font-display font-bold mb-5">Быстрые действия</h3>
+                <div class="space-y-3">
+                    <a href="/admin/products/moderation" class="dashboard-action-link flex items-center p-3 bg-gray-100 rounded-lg hover:bg-accent-teal hover:text-white transition-all">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                        <span>Модерация товаров</span>
+                        {% if stats.products.moderation > 0 %}
+                        <span class="ml-auto bg-amber-500 text-white rounded-full text-xs px-2 py-0.5">{{ stats.products.moderation }}</span>
+                        {% endif %}
+                    </a>
+                    <a href="/admin/users" class="dashboard-action-link flex items-center p-3 bg-gray-100 rounded-lg hover:bg-accent-teal hover:text-white transition-all">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+                        </svg>
+                        <span>Управление пользователями</span>
+                    </a>
+                    <a href="/admin/orders/pending" class="dashboard-action-link flex items-center p-3 bg-gray-100 rounded-lg hover:bg-accent-teal hover:text-white transition-all">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+                        </svg>
+                        <span>Заказы в обработке</span>
+                        {% if stats.orders.pending > 0 %}
+                        <span class="ml-auto bg-amber-500 text-white rounded-full text-xs px-2 py-0.5">{{ stats.orders.pending }}</span>
+                        {% endif %}
+                    </a>
+                    <a href="/admin/analytics/reports" class="dashboard-action-link flex items-center p-3 bg-gray-100 rounded-lg hover:bg-accent-teal hover:text-white transition-all">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                        </svg>
+                        <span>Аналитические отчеты</span>
+                    </a>
+                    <a href="/admin/settings" class="dashboard-action-link flex items-center p-3 bg-gray-100 rounded-lg hover:bg-accent-teal hover:text-white transition-all">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                        </svg>
+                        <span>Настройки сайта</span>
+                    </a>
+                    <a href="/admin/log" class="dashboard-action-link flex items-center p-3 bg-gray-100 rounded-lg hover:bg-accent-teal hover:text-white transition-all">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                        </svg>
+                        <span>Системный журнал</span>
+                    </a>
+                </div>
+            </div>
+            
+            <!-- Последние действия в системе -->
+            <div class="bg-white rounded-lg shadow p-6 md:col-span-2">
+                <div class="flex justify-between items-center mb-5">
+                    <h3 class="text-xl font-display font-bold">Последние действия</h3>
+                    <div class="flex space-x-2">
+                        <button 
+                            class="px-2 py-1 text-xs rounded filter-active" 
+                            hx-get="/admin/log/actions?type=all" 
+                            hx-target="#action-list" 
+                            hx-swap="innerHTML"
+                            hx-trigger="click">
+                            Все
+                        </button>
+                        <button 
+                            class="px-2 py-1 text-xs rounded hover:bg-gray-100" 
+                            hx-get="/admin/log/actions?type=product" 
+                            hx-target="#action-list" 
+                            hx-swap="innerHTML"
+                            hx-trigger="click">
+                            Товары
+                        </button>
+                        <button 
+                            class="px-2 py-1 text-xs rounded hover:bg-gray-100" 
+                            hx-get="/admin/log/actions?type=user" 
+                            hx-target="#action-list" 
+                            hx-swap="innerHTML"
+                            hx-trigger="click">
+                            Пользователи
+                        </button>
+                        <button 
+                            class="px-2 py-1 text-xs rounded hover:bg-gray-100" 
+                            hx-get="/admin/log/actions?type=order" 
+                            hx-target="#action-list" 
+                            hx-swap="innerHTML"
+                            hx-trigger="click">
+                            Заказы
+                        </button>
+                    </div>
+                </div>
+                <div id="action-list" class="space-y-4">
+                    <!-- События загружаются динамически через запрос HTMX -->
+                    {% for i in range(1, 6) %}
+                    <div class="border-l-4 {{ ['border-accent-teal', 'border-accent-coral', 'border-accent-purple', 'border-accent-blue', 'border-gray-400']|random }} pl-4 py-1 animate-pulse">
+                        <div class="flex justify-between">
+                            <p class="font-medium bg-gray-200 h-5 w-2/3 rounded"></p>
+                            <span class="badge-{{ ['success', 'warning', 'danger']|random }} action-badge opacity-75">Загрузка...</span>
+                        </div>
+                        <p class="text-sm text-gray-500 bg-gray-100 h-4 w-1/3 rounded mt-1"></p>
+                    </div>
+                    {% endfor %}
+                </div>
+                <div class="mt-4 text-center">
+                    <a href="/admin/log" class="text-accent-teal hover:underline text-sm">Показать все действия</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // График продаж
+    const salesCtx = document.getElementById('salesChart').getContext('2d');
+    const salesChart = new Chart(salesCtx, {
+        type: 'line',
+        data: {
+            labels: ['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс'],
+            datasets: [{
+                label: 'Продажи',
+                data: [12, 19, 3, 5, 2, 3, 15],
+                borderColor: '#36B5A2',
+                backgroundColor: 'rgba(54, 181, 162, 0.1)',
+                tension: 0.3,
+                fill: true
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    display: false
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
+        }
+    });
+
+    // График пользователей
+    const usersCtx = document.getElementById('usersChart').getContext('2d');
+    const usersChart = new Chart(usersCtx, {
+        type: 'bar',
+        data: {
+            labels: ['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс'],
+            datasets: [{
+                label: 'Новые пользователи',
+                data: [5, 8, 12, 7, 10, 15, 20],
+                backgroundColor: '#36B5A2'
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    display: false
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
+        }
+    });
+
+    // График категорий
+    const categoriesCtx = document.getElementById('categoriesChart').getContext('2d');
+    const categoriesChart = new Chart(categoriesCtx, {
+        type: 'doughnut',
+        data: {
+            labels: ['Цифровые товары', 'Услуги', 'Графика', 'Программы', 'Шаблоны'],
+            datasets: [{
+                data: [30, 25, 15, 20, 10],
+                backgroundColor: [
+                    '#36B5A2',
+                    '#FF6B6B',
+                    '#4F46E5',
+                    '#F59E0B',
+                    '#8B5CF6'
+                ]
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    position: 'right'
+                }
+            }
+        }
+    });
+
+    // География продаж
+    const geographyCtx = document.getElementById('geographyChart').getContext('2d');
+    const geographyChart = new Chart(geographyCtx, {
+        type: 'bar',
+        data: {
+            labels: ['Москва', 'Санкт-Петербург', 'Казань', 'Новосибирск', 'Екатеринбург'],
+            datasets: [{
+                label: 'Заказы',
+                data: [65, 40, 25, 30, 22],
+                backgroundColor: '#36B5A2'
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            indexAxis: 'y',
+            plugins: {
+                legend: {
+                    display: false
+                }
+            },
+            scales: {
+                x: {
+                    beginAtZero: true
+                }
+            }
+        }
+    });
+
+    // Инициализация фильтров для графиков
+    const salesPeriodButtons = document.querySelectorAll('#sales-week, #sales-month, #sales-year');
+    salesPeriodButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            salesPeriodButtons.forEach(btn => btn.classList.remove('filter-active'));
+            button.classList.add('filter-active');
+            
+            // Обновление данных в зависимости от выбранного периода
+            // (здесь просто демо-данные)
+            let labels, data;
+            if (button.id === 'sales-week') {
+                labels = ['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс'];
+                data = [12, 19, 3, 5, 2, 3, 15];
+            } else if (button.id === 'sales-month') {
+                labels = ['Нед 1', 'Нед 2', 'Нед 3', 'Нед 4'];
+                data = [42, 55, 38, 70];
+            } else {
+                labels = ['Янв', 'Фев', 'Мар', 'Апр', 'Май', 'Июн', 'Июл', 'Авг', 'Сен', 'Окт', 'Ноя', 'Дек'];
+                data = [120, 150, 180, 90, 110, 150, 170, 190, 150, 160, 190, 230];
+            }
+            
+            salesChart.data.labels = labels;
+            salesChart.data.datasets[0].data = data;
+            salesChart.update();
+        });
+    });
+    
+    const usersActivityButtons = document.querySelectorAll('#users-registrations, #users-logins, #users-purchases');
+    usersActivityButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            usersActivityButtons.forEach(btn => btn.classList.remove('filter-active'));
+            button.classList.add('filter-active');
+            
+            // Обновление данных в зависимости от выбранного типа активности
+            let data;
+            if (button.id === 'users-registrations') {
+                data = [5, 8, 12, 7, 10, 15, 20];
+            } else if (button.id === 'users-logins') {
+                data = [25, 30, 28, 35, 40, 38, 45];
+            } else {
+                data = [3, 5, 8, 4, 6, 9, 12];
+            }
+            
+            usersChart.data.datasets[0].data = data;
+            usersChart.update();
+        });
+    });
+    
+    // Загрузка списка событий через HTMX при загрузке страницы
+    if (window.htmx) {
+        htmx.ajax('GET', '/admin/log/actions?type=all', {target: '#action-list', swap: 'innerHTML'});
+    }
+    
+    // Активация фильтров для списка событий
+    document.querySelectorAll('[hx-get^="/admin/log/actions"]').forEach(button => {
+        button.addEventListener('click', function() {
+            document.querySelectorAll('[hx-get^="/admin/log/actions"]')
+                .forEach(btn => btn.classList.remove('filter-active'));
+            button.classList.add('filter-active');
+        });
+    });
+});
+</script>
+{% endblock %} 

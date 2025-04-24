@@ -1,0 +1,195 @@
+{% extends "base.html" %}
+
+{% block title %}Профиль пользователя - TradeHub{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row">
+        <!-- Боковое меню профиля -->
+        <div class="col-lg-3 mb-4">
+            <div class="card shadow-sm">
+                <div class="card-body text-center">
+                    {% if user.avatar %}
+                    <img src="{{ url_for('static', path=user.avatar) }}" alt="{{ user.username }}" class="rounded-circle mb-3" width="120" height="120">
+                    {% else %}
+                    <div class="rounded-circle bg-secondary text-white d-flex align-items-center justify-content-center mx-auto mb-3" style="width: 120px; height: 120px; font-size: 3rem;">
+                        {{ user.username[0] | upper }}
+                    </div>
+                    {% endif %}
+                    <h4 class="mb-0">{{ user.username }}</h4>
+                    <p class="text-muted">{{ user.full_name }}</p>
+                    
+                    <div class="d-grid gap-2 mt-3">
+                        <a href="{{ url_for('update_user_profile') }}" class="btn btn-outline-primary">Редактировать профиль</a>
+                        
+                        {% if user.role == 'buyer' %}
+                        <a href="{{ url_for('become_seller') }}" class="btn btn-outline-success">Стать продавцом</a>
+                        {% endif %}
+                    </div>
+                </div>
+                
+                <div class="list-group list-group-flush">
+                    <a href="{{ url_for('user_profile') }}" class="list-group-item list-group-item-action active">
+                        <i class="fas fa-user me-2"></i> Мой профиль
+                    </a>
+                    <a href="{{ url_for('user_orders') }}" class="list-group-item list-group-item-action">
+                        <i class="fas fa-shopping-bag me-2"></i> Мои заказы
+                    </a>
+                    {% if user.role == 'seller' %}
+                    <a href="{{ url_for('seller_products') }}" class="list-group-item list-group-item-action">
+                        <i class="fas fa-box me-2"></i> Мои товары
+                    </a>
+                    <a href="{{ url_for('seller_orders') }}" class="list-group-item list-group-item-action">
+                        <i class="fas fa-store me-2"></i> Заказы на мои товары
+                    </a>
+                    {% endif %}
+                    <a href="{{ url_for('user_wishlist') }}" class="list-group-item list-group-item-action">
+                        <i class="fas fa-heart me-2"></i> Избранное
+                    </a>
+                    <a href="{{ url_for('user_security') }}" class="list-group-item list-group-item-action">
+                        <i class="fas fa-shield-alt me-2"></i> Безопасность
+                    </a>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Основное содержимое профиля -->
+        <div class="col-lg-9">
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-white">
+                    <h5 class="mb-0">Информация о пользователе</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label text-muted">Имя пользователя</label>
+                            <p class="fw-medium">{{ user.username }}</p>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label text-muted">Email</label>
+                            <p class="fw-medium">{{ user.email }}</p>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label text-muted">Полное имя</label>
+                            <p class="fw-medium">{{ user.full_name or "Не указано" }}</p>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label text-muted">Телефон</label>
+                            <p class="fw-medium">{{ user.phone or "Не указан" }}</p>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label text-muted">Роль</label>
+                            <p class="fw-medium">
+                                {% if user.role == 'buyer' %}
+                                <span class="badge bg-primary">Покупатель</span>
+                                {% elif user.role == 'seller' %}
+                                <span class="badge bg-success">Продавец</span>
+                                {% elif user.role == 'admin' %}
+                                <span class="badge bg-danger">Администратор</span>
+                                {% endif %}
+                            </p>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label text-muted">Дата регистрации</label>
+                            <p class="fw-medium">{{ user.created_at.strftime('%d.%m.%Y') }}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            {% if user.role == 'seller' %}
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-white">
+                    <h5 class="mb-0">Информация о продавце</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label class="form-label text-muted">Рейтинг продавца</label>
+                            <div class="d-flex align-items-center">
+                                <div class="me-2">
+                                    <strong>{{ "%.1f"|format(user.seller_rating) }}</strong>
+                                </div>
+                                <div class="star-rating">
+                                    {% for i in range(1, 6) %}
+                                    {% if i <= user.seller_rating %}
+                                    <i class="fas fa-star text-warning"></i>
+                                    {% elif i <= user.seller_rating + 0.5 %}
+                                    <i class="fas fa-star-half-alt text-warning"></i>
+                                    {% else %}
+                                    <i class="far fa-star text-warning"></i>
+                                    {% endif %}
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label text-muted">Количество продаж</label>
+                            <p class="fw-medium">{{ sales_count }}</p>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label class="form-label text-muted">Описание продавца</label>
+                        <p class="fw-medium">{{ user.seller_description or "Описание не добавлено" }}</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-white">
+                    <h5 class="mb-0">Статистика продавца</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-4 mb-3">
+                            <div class="p-3 bg-light rounded text-center">
+                                <h3 class="mb-1">{{ active_products }}</h3>
+                                <p class="mb-0 text-muted">Активных товаров</p>
+                            </div>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <div class="p-3 bg-light rounded text-center">
+                                <h3 class="mb-1">{{ completed_orders }}</h3>
+                                <p class="mb-0 text-muted">Выполненных заказов</p>
+                            </div>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <div class="p-3 bg-light rounded text-center">
+                                <h3 class="mb-1">{{ reviews_count }}</h3>
+                                <p class="mb-0 text-muted">Отзывов</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+            
+            <div class="card shadow-sm">
+                <div class="card-header bg-white">
+                    <h5 class="mb-0">Последние действия</h5>
+                </div>
+                <div class="card-body">
+                    {% if activity_log %}
+                    <ul class="list-group list-group-flush">
+                        {% for activity in activity_log %}
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <div>
+                                <span class="text-muted">{{ activity.timestamp.strftime('%d.%m.%Y %H:%M') }}</span>
+                                <p class="mb-0">{{ activity.description }}</p>
+                            </div>
+                            <span class="badge rounded-pill" style="background-color: {{ activity.color }}">
+                                {{ activity.type }}
+                            </span>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                    {% else %}
+                    <p class="text-muted text-center py-3">История действий пуста</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

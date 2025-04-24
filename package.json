@@ -1,0 +1,24 @@
+{
+  "name": "tradehub",
+  "version": "1.0.0",
+  "description": "Маркетплейс цифровых товаров и услуг",
+  "main": "index.js",
+  "scripts": {
+    "start-mcp": "node mcp-server.js",
+    "dev": "python -m uvicorn app.main:app --reload",
+    "build": "echo \"Build command here\"",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "marketplace",
+    "digital",
+    "goods",
+    "services"
+  ],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@agentdeskai/browser-tools-mcp": "latest",
+    "ws": "^8.15.1"
+  }
+}

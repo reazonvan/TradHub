@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TradeHub MCP Тест</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 20px;
+      line-height: 1.6;
+    }
+    h1 {
+      color: #5D5FEF;
+      border-bottom: 2px solid #eee;
+      padding-bottom: 10px;
+    }
+    .btn {
+      background-color: #5D5FEF;
+      color: white;
+      border: none;
+      padding: 10px 15px;
+      border-radius: 4px;
+      cursor: pointer;
+      margin-right: 10px;
+      margin-bottom: 10px;
+    }
+    .btn:hover {
+      background-color: #4345CB;
+    }
+    .log {
+      background-color: #f8f8f8;
+      border: 1px solid #ddd;
+      padding: 15px;
+      border-radius: 4px;
+      height: 300px;
+      overflow-y: auto;
+      margin-top: 20px;
+      font-family: monospace;
+    }
+    .log-entry {
+      margin-bottom: 5px;
+      border-bottom: 1px solid #eee;
+      padding-bottom: 5px;
+    }
+    .event {
+      color: #0066cc;
+    }
+    .error {
+      color: #cc0000;
+    }
+    .info {
+      color: #009900;
+    }
+    .status {
+      margin-top: 20px;
+      padding: 10px;
+      border-radius: 4px;
+    }
+    .connected {
+      background-color: #e6ffe6;
+      border: 1px solid #ccffcc;
+    }
+    .disconnected {
+      background-color: #ffe6e6;
+      border: 1px solid #ffcccc;
+    }
+  </style>
+</head>
+<body>
+  <h1>TradeHub MCP Тест</h1>
+  
+  <div id="status" class="status disconnected">Статус подключения: Отключено</div>
+  
+  <div>
+    <button class="btn" id="testConnection">Проверить подключение</button>
+    <button class="btn" id="sendEvent">Отправить тестовое событие</button>
+    <button class="btn" id="sendError">Отправить тестовую ошибку</button>
+    <button class="btn" id="clearLog">Очистить лог</button>
+  </div>
+  
+  <div class="log" id="log"></div>
+  
+  <script>
+    // Настройки MCP
+    const MCP_HOST = 'localhost';
+    const MCP_PORT = 3025;
+    
+    // Элементы DOM
+    const statusElement = document.getElementById('status');
+    const logElement = document.getElementById('log');
+    const testConnectionButton = document.getElementById('testConnection');
+    const sendEventButton = document.getElementById('sendEvent');
+    const sendErrorButton = document.getElementById('sendError');
+    const clearLogButton = document.getElementById('clearLog');
+    
+    // WebSocket соединение
+    let socket = null;
+    let connected = false;
+    
+    // Добавление записи в лог
+    function logMessage(message, type = 'info') {
+      const entry = document.createElement('div');
+      entry.className = `log-entry ${type}`;
+      entry.textContent = `[${new Date().toLocaleTimeString()}] ${message}`;
+      logElement.appendChild(entry);
+      logElement.scrollTop = logElement.scrollHeight;
+    }
+    
+    // Обновление статуса соединения
+    function updateConnectionStatus(isConnected) {
+      connected = isConnected;
+      statusElement.className = `status ${isConnected ? 'connected' : 'disconnected'}`;
+      statusElement.textContent = `Статус подключения: ${isConnected ? 'Подключено' : 'Отключено'}`;
+    }
+    
+    // Подключение к MCP серверу
+    function connectToMcpServer() {
+      logMessage('Попытка подключения к MCP серверу...', 'info');
+      
+      try {
+        socket = new WebSocket(`ws://${MCP_HOST}:${MCP_PORT}`);
+        
+        socket.onopen = function() {
+          logMessage('Соединение с MCP сервером установлено', 'info');
+          updateConnectionStatus(true);
+        };
+        
+        socket.onclose = function() {
+          logMessage('Соединение с MCP сервером закрыто', 'info');
+          updateConnectionStatus(false);
+        };
+        
+        socket.onerror = function(error) {
+          logMessage(`Ошибка соединения с MCP сервером: ${error}`, 'error');
+          updateConnectionStatus(false);
+        };
+        
+        socket.onmessage = function(event) {
+          try {
+            const data = JSON.parse(event.data);
+            logMessage(`Получено сообщение от MCP сервера: ${JSON.stringify(data)}`, 'event');
+          } catch (err) {
+            logMessage(`Ошибка при обработке сообщения: ${err}`, 'error');
+          }
+        };
+      } catch (err) {
+        logMessage(`Ошибка при создании соединения: ${err}`, 'error');
+        updateConnectionStatus(false);
+      }
+    }
+    
+    // Отправка события на MCP сервер
+    function sendMcpEvent(name, data) {
+      if (!connected || !socket) {
+        logMessage('Нельзя отправить событие: нет соединения с MCP сервером', 'error');
+        return;
+      }
+      
+      try {
+        const event = {
+          type: 'event',
+          name: name,
+          data: data || {},
+          timestamp: new Date().toISOString(),
+          url: window.location.href
+        };
+        
+        socket.send(JSON.stringify(event));
+        logMessage(`Отправлено событие: ${name}`, 'event');
+      } catch (err) {
+        logMessage(`Ошибка при отправке события: ${err}`, 'error');
+      }
+    }
+    
+    // Отправка ошибки на MCP сервер
+    function sendMcpError(message, stack) {
+      if (!connected || !socket) {
+        logMessage('Нельзя отправить ошибку: нет соединения с MCP сервером', 'error');
+        return;
+      }
+      
+      try {
+        const error = {
+          type: 'error',
+          message: message,
+          stack: stack,
+          timestamp: new Date().toISOString(),
+          url: window.location.href,
+          userAgent: navigator.userAgent
+        };
+        
+        socket.send(JSON.stringify(error));
+        logMessage(`Отправлена ошибка: ${message}`, 'error');
+      } catch (err) {
+        logMessage(`Ошибка при отправке ошибки: ${err}`, 'error');
+      }
+    }
+    
+    // Обработчики кнопок
+    testConnectionButton.addEventListener('click', function() {
+      if (connected) {
+        logMessage('MCP соединение уже установлено', 'info');
+      } else {
+        connectToMcpServer();
+      }
+    });
+    
+    sendEventButton.addEventListener('click', function() {
+      sendMcpEvent('test_event', {
+        text: 'Тестовое событие',
+        timestamp: new Date().toISOString(),
+        random: Math.floor(Math.random() * 1000)
+      });
+    });
+    
+    sendErrorButton.addEventListener('click', function() {
+      sendMcpError('Тестовая ошибка', 'Это тестовый стек ошибки');
+    });
+    
+    clearLogButton.addEventListener('click', function() {
+      logElement.innerHTML = '';
+      logMessage('Лог очищен', 'info');
+    });
+    
+    // Автоматическое подключение при загрузке страницы
+    window.addEventListener('load', function() {
+      logMessage('Страница загружена', 'info');
+      connectToMcpServer();
+    });
+  </script>
+</body>
+</html> 
